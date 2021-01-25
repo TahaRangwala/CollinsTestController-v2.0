@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 import sys
 
+#Runs the entire GUI
 def runGUI():
     #Color Theme of GUI
     sg.theme('LightGreen2')
