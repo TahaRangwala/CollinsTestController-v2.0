@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import sys
+from equipment import Equipment_Connection
 
 #Runs the entire GUI
 def runGUI():
@@ -19,7 +20,7 @@ def runGUI():
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', "RADIO1", default=True), sg.Radio('P1dB Test', "RADIO1"), sg.Radio('PinvPout Test', "RADIO1")],
                     [sg.Text('JSON File:'), sg.InputText(key='-IN2-')],
                     [sg.Button('Add')],
-                    [sg.Output(size=(60,10), key='-OUTPUT-')], 
+                    [sg.Output(size=(60,10), key='-OUTPUT2-')], 
                     [sg.Button('Refresh Configurations')]]
 
     #Running Tests
@@ -40,15 +41,45 @@ def runGUI():
 
     window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(950, 630))
 
+    
+    #Setting required data structures and variables
+    equipmentList = []#all devices connected to PI
+
     #Loop running while GUI is open
-    i = -1
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED or event == 'Close':
             break
         elif event == 'Add':
-            i += 1
-            
+            equipmentName = values['-IN1-']
+            fileName = values['-IN2-']
+            equipmentList.append(Equipment_Connection(equipmentName, fileName))
+
+            #Outputting connection status for all testing equipment
+            outputString = ""
+            isError = False
+            for device in equipmentList:
+                isError = device.connect()
+                if(isError):
+                    outputString = outputString + device.name + ": ERROR\n"
+                else:
+                    outputString = outputString + device.name + ": CONNECTED"  
+            window['-OUTPUT-'].update(outputString)
+            #if(isError):
+            #    sg.PopupError('Some equipment connections have not been established. Please check the user manual to make sure your settings are correct.')
+        elif event == 'Refresh Connections':
+            window['-OUTPUT-'].update("")
+            outputString = ""
+            isError = False
+            for device in equipmentList:
+                isError = device.connect()
+                if(isError):
+                    outputString = outputString + device.name + ": ERROR\n"
+                else:
+                    outputString = outputString + device.name + ": CONNECTED"  
+            window['-OUTPUT-'].update(outputString)
+            #if(isError):
+            #    sg.PopupError('Some equipment connections have not been established. Please check the user manual to make sure your settings are correct.')
 
     #Closes GUI
     window.close()
