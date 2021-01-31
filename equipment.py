@@ -22,7 +22,8 @@ class Equipment_Connection:
     def connect(self):
         error = False
         try:
-            self.device = self.resourceManager.open_resource(address)
+            self.device = self.resourceManager.open_resource(self.address, write_termination = self.write_termination,
+            read_termination = self.read_termination)
         except:
             error = True
         return error
