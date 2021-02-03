@@ -22,6 +22,7 @@ print(FA.query("*IDN?"))
 
 ###Network Analyzer
 
+
 ### for signal generator ###
 # WORKS VERY WELL #
 print(FA.write(":OUTPUT OFF"))
