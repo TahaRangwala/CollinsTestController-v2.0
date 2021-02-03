@@ -24,6 +24,7 @@ class Equipment_Connection:
         try:
             self.device = self.resourceManager.open_resource(self.address, write_termination = self.write_termination,
             read_termination = self.read_termination)
+            self.device.query(self.idn_cmd)
         except:
             error = True
         return error

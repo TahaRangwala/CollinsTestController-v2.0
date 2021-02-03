@@ -18,7 +18,7 @@ def runGUI():
 
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', "RADIO1", default=True), sg.Radio('P1dB Test', "RADIO1"), sg.Radio('PinvPout Test', "RADIO1")],
-                    [sg.Text('JSON File:'), sg.InputText(key='-IN2-')],
+                    [sg.Text('JSON File:'), sg.InputText(key='-IN3-')],
                     [sg.Button('Add')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')], 
                     [sg.Button('Refresh Configurations')]]
@@ -27,9 +27,9 @@ def runGUI():
     tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test')]]
 
     #Plot Settings
-    tempLayout4 = [[sg.Text('Title'), sg.InputText(key='-IN3-')],
-                [sg.Text('X-Label'), sg.InputText(key='-IN4-')],
-                [sg.Text('Y-Label'), sg.InputText(key='-IN5-')],
+    tempLayout4 = [[sg.Text('Title'), sg.InputText(key='-IN4-')],
+                [sg.Text('X-Label'), sg.InputText(key='-IN5-')],
+                [sg.Text('Y-Label'), sg.InputText(key='-IN6-')],
                 [sg.Button('Apply Changes')]]
 
     layout = [[sg.Frame(layout=tempLayout1, title='Equipment Connections', element_justification='c'), sg.Frame(layout=tempLayout2, title='Test Configuration', element_justification='c')],
@@ -63,7 +63,7 @@ def runGUI():
                 if(isError):
                     outputString = outputString + device.name + ": ERROR\n"
                 else:
-                    outputString = outputString + device.name + ": CONNECTED"  
+                    outputString = outputString + device.name + ": CONNECTED\n"  
             window['-OUTPUT-'].update(outputString)
             #if(isError):
             #    sg.PopupError('Some equipment connections have not been established. Please check the user manual to make sure your settings are correct.')
@@ -76,7 +76,7 @@ def runGUI():
                 if(isError):
                     outputString = outputString + device.name + ": ERROR\n"
                 else:
-                    outputString = outputString + device.name + ": CONNECTED"  
+                    outputString = outputString + device.name + ": CONNECTED\n"  
             window['-OUTPUT-'].update(outputString)
             #if(isError):
             #    sg.PopupError('Some equipment connections have not been established. Please check the user manual to make sure your settings are correct.')
