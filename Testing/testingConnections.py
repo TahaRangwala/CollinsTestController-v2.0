@@ -8,29 +8,31 @@ theResource3 = 'TCPIP0::192.168.1.104::INSTR'
 
 SA = rm.open_resource(theResource1)
 NA = rm.open_resource(theResource2)
-FA = rm.open_resource(theResource3)
+FG = rm.open_resource(theResource3)
 SA.read_termination = '\n'
 SA.write_termination = '\n'
 NA.read_termination = '\n'
 NA.write_termination = '\n'
-FA.read_termination = '\n'
-FA.write_termination = '\n'
+FG.read_termination = '\n'
+FG.write_termination = '\n'
 print(SA.query("*IDN?"))
 print(NA.query("*IDN?"))
-print(FA.query("*IDN?"))
+print(FG.query("*IDN?"))
 
 
-###Network Analyzer
+###Network Analyzer, page 360 in manual
+print(NA.write("SENS1:FREQ:CENT 100MHz"))
+print(NA.query("SENS:FREQ:CENT?"))
 
-
+print("DIVIDER")
 ### for signal generator ###
 # WORKS VERY WELL #
-print(FA.write(":OUTPUT OFF"))
-print(FA.write(":VOLT 5"))
-print(FA.write(":VOLT:OFFS 1"))
-print(FA.write(":FREQ 1000000"))
-print(FA.write(":PHAS 90"))
-print(FA.write(":OUTPUT ON"))
+print(FG.write(":OUTPUT OFF"))
+print(FG.write(":VOLT 5"))
+print(FG.write(":VOLT:OFFS 1"))
+print(FG.write(":FREQ 1000000"))
+print(FG.write(":PHAS 90"))
+print(FG.write(":OUTPUT ON"))
 
 
 ### for spectrum analyzer ###
