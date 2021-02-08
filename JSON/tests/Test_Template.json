@@ -1,0 +1,26 @@
+{
+    "Test Name": {
+        "Equipment List" : ["Equipment 1", "Equipment 2", "Equipment 3"],
+        "config":{
+            "num": 1,
+            "cmd1": {
+                "Equipment": "Equipment 1",
+                "cmd": "Command Syntax"
+            }
+        },
+        "run":{
+            "num": 1,
+            "cmd1": {
+                "Equipment": "Equipment 1",
+                "cmd": "Command Syntax"
+            }
+        },
+        "reset":{
+            "num": 1,
+            "cmd1": {
+                "Equipment": "Equipment 1",
+                "cmd": "Command Syntax"
+            }
+        }
+    }
+}
