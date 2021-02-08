@@ -1,7 +1,6 @@
 {
     "Oscilloscope": {
       "address": "TCPIP0::192.168.1.102::INSTR",
-      "idn": "Rigol Technologies,DG4162,DG4C151300243,00.01.04",
       "timeout": 1000,
       "idn_cmd": "*IDN?",
       "write_termination": "\n",

@@ -13,7 +13,6 @@ class Equipment_Connection:
         self.resourceManager = visa.ResourceManager('@py')
         self.name = name
         self.address = jsonData[name]["address"]
-        self.idn = jsonData[name]["idn"]
         self.timeout = jsonData[name]["timeout"]
         self.idn_cmd = jsonData[name]["idn_cmd"]
         self.write_termination = jsonData[name]["write_termination"]
