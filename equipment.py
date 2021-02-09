@@ -12,11 +12,11 @@ class Equipment_Connection:
             jsonData = json.load(f)
         self.resourceManager = visa.ResourceManager('@py')
         self.name = name
-        self.address = jsonData[name]["address"]
-        self.timeout = jsonData[name]["timeout"]
-        self.idn_cmd = jsonData[name]["idn_cmd"]
-        self.write_termination = jsonData[name]["write_termination"]
-        self.read_termination = jsonData[name]["read_termination"]
+        self.address = jsonData[name]['address']
+        self.timeout = jsonData[name]['timeout']
+        self.idn_cmd = jsonData[name]['idn_cmd']
+        self.write_termination = jsonData[name]['write_termination']
+        self.read_termination = jsonData[name]['read_termination']
     
     def connect(self):
         error = False
