@@ -21,8 +21,9 @@ def runGUI():
                     [sg.Button('Refresh Connections')]]
 
     #Test Configuration
-    tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', "RADIO1", default=True), sg.Radio('P1dB Test', "RADIO1"), sg.Radio('PinvPout Test', "RADIO1")],
-                    [sg.Text('JSON File:'), sg.InputText(key='-IN3-')],
+    tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-')],
+                    [sg.Text('Name:'), sg.InputText(key='-IN3-')],
+                    [sg.Text('JSON File:'), sg.InputText(key='-IN4-')],
                     [sg.Button('Add Test')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')], 
                     [sg.Button('Refresh Configurations')]]
@@ -31,19 +32,20 @@ def runGUI():
     tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test')]]
 
     #Plot Settings
-    tempLayout4 = [[sg.Text('Title'), sg.InputText(key='-IN4-')],
-                [sg.Text('X-Label'), sg.InputText(key='-IN5-')],
-                [sg.Text('Y-Label'), sg.InputText(key='-IN6-')],
+    tempLayout4 = [[sg.Text('Title'), sg.InputText(key='-IN5-')],
+                [sg.Text('X-Label'), sg.InputText(key='-IN6-')],
+                [sg.Text('Y-Label'), sg.InputText(key='-IN7-')],
                 [sg.Button('Apply Changes')]]
 
+    #Entire GUI Layout
     layout = [[sg.Frame(layout=tempLayout1, title='Equipment Connections', element_justification='c'), sg.Frame(layout=tempLayout2, title='Test Configuration', element_justification='c')],
             [sg.Text('')],
-            [sg.Frame(layout=tempLayout3, title='Runnable Tests', element_justification='c')],
+            [sg.Frame(layout=tempLayout3, title='Runnable Tests', element_justification='c'), sg.Text('   '), sg.Text('   '), sg.Text('   '), sg.Button('Reset Tests', size =(10, 2))],
             [sg.Text('')],
             [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
-            [sg.Button('Close', size =(10, 2))]]
+            [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(950, 630))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(950, 680))
 
     
     #Setting required data structures and variables
@@ -76,7 +78,7 @@ def runGUI():
             for device in equipmentList:
                 isError = device.connect()
                 if(isError):
-                    outputString = outputString + device.name + ": ERROR\n"
+                    outputString = outputString + device.name + ": ERROR, NOT CONNECTED\n"
                 else:
                     outputString = outputString + device.name + ": CONNECTED\n"  
             window['-OUTPUT-'].update(outputString)
@@ -96,7 +98,7 @@ def runGUI():
                 for device in equipmentList:
                     isError = device.connect()
                     if(isError):
-                        outputString = outputString + device.name + ": ERROR\n"
+                        outputString = outputString + device.name + ": ERROR, NOT CONNECTED\n"
                     else:
                         outputString = outputString + device.name + ": CONNECTED\n"  
                 window['-OUTPUT-'].update(outputString)
@@ -109,18 +111,54 @@ def runGUI():
                 sg.PopupError('Some equipment connections have not been established. Please check the user manual to make sure your settings are correct.')
         
         elif event == 'Add Test':
-            x = 5
+            isError = False
+            testName = values['-IN3-']
+            fileName = values['-IN4-']
+
+            outputString = ""
+            if(values['-R1-'] == True):
+                pass
+            elif(values['-R2-'] == True):
+                pass
+            else:
+                try:
+                    PinVPoutTest = PinVPout_Test(testName, fileName)
+                    PinVPoutTest.addEquipment(equipmentList)
+                    PinVPoutTest.configureTest()
+                    outputString = outputString + testName + ": TEST CONFIGURED\n"
+                except:
+                    outputString = outputString + testName + ": ERROR, TEST NOT CONFIGURED\n"
+                    isError = True
+            window['-OUTPUT2-'].update(outputString)
+
+            if(isError):
+                sg.PopupError('Some test configurations have not been established. Please check the user manual to make sure your settings are correct.')   
 
         elif event == 'Refresh Configurations':
-            x = 5
+            pass
 
         elif event == 'Mixer Spur Test':
+            pass
 
         elif event == 'P1dB Test':
+            pass
 
         elif event == 'PinvPout Test':
+            pass
 
-        
+        elif event == 'Reset':
+            #Resetting Everything
+            equipmentList = []
+
+            MixerSpurTest = None
+            P1dBTest = None
+            PinVPoutTest = None
+
+            window['-OUTPUT-'].update('')
+            window['-OUTPUT2-'].update('')
+
+        elif event == 'Reset Tests':
+            passclear
 
     #Closes GUI
     window.close()

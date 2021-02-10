@@ -5,21 +5,24 @@
             "num": 1,
             "cmd1": {
                 "Equipment": "Equipment 1",
-                "cmd": "Command Syntax"
+                "cmd": "SCPI Command Syntax",
+                "type": "w"
             }
         },
         "run":{
             "num": 1,
             "cmd1": {
                 "Equipment": "Equipment 1",
-                "cmd": "Command Syntax"
+                "cmd": "SCPI Command Syntax",
+                "type": "q"
             }
         },
         "reset":{
             "num": 1,
             "cmd1": {
                 "Equipment": "Equipment 1",
-                "cmd": "Command Syntax"
+                "cmd": "SCPI Command Syntax",
+                "type": "w"
             }
         }
     }
