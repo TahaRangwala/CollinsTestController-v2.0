@@ -126,7 +126,7 @@ def runGUI():
                 try:
                     PinVPoutTest = PinVPout_Test(testName, fileName)
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
-                    configuredTests = PinVPoutTest.configureTest()
+                    #configuredTests = PinVPoutTest.configureTest()
                     
                     if(equipmentFound and configuredTests):
                         outputString = outputString + testName + ": TEST CONFIGURED\n"
