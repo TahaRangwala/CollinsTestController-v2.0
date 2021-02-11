@@ -6,7 +6,9 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "type": "w"
+                "args:": "argument",
+                "type": "w",
+                "title": "title"
             }
         },
         "run":{
@@ -14,7 +16,9 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "type": "q"
+                "args:": "argument",
+                "type": "q",
+                "title": "title"
             }
         },
         "reset":{
@@ -22,7 +26,9 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "type": "w"
+                "args:": "argument",
+                "type": "w",
+                "title": "title"
             }
         }
     }

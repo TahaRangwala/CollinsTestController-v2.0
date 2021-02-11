@@ -112,6 +112,8 @@ def runGUI():
         
         elif event == 'Add Test':
             isError = False
+            equipmentFound = False
+            configuredTests = False
             testName = values['-IN3-']
             fileName = values['-IN4-']
 
@@ -123,9 +125,13 @@ def runGUI():
             else:
                 try:
                     PinVPoutTest = PinVPout_Test(testName, fileName)
-                    PinVPoutTest.addEquipment(equipmentList)
-                    PinVPoutTest.configureTest()
-                    outputString = outputString + testName + ": TEST CONFIGURED\n"
+                    equipmentFound = PinVPoutTest.addEquipment(equipmentList)
+                    configuredTests = PinVPoutTest.configureTest()
+                    
+                    if(equipmentFound and configuredTests):
+                        outputString = outputString + testName + ": TEST CONFIGURED\n"
+                    else:
+                        outputString = outputString + testName + ": ERROR, TEST NOT CONFIGURED\n"
                 except:
                     outputString = outputString + testName + ": ERROR, TEST NOT CONFIGURED\n"
                     isError = True

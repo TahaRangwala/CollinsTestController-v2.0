@@ -16,25 +16,29 @@ class Run_Tests:
         self.configuration = jsonData[name]['config']
         self.run = jsonData[name]['run']
         self.reset = jsonData[name]['reset']
+        self.equipmentConnected = False
 
         self.devices = []
 
     def addEquipment(self, listOfDevices):
-        allFound = False
-        for device in listOfDevices:
+        equipmentFound = True
+        for equipment in self.equipmentList:
             found = False
-            for equipment in self.equipmentList:
+            for device in listOfDevices:
                 if(device.name == equipment):
                     self.devices.append(device)
                     found = True
-                else:
-                    continue
+            
+            if(found == False):
+                return False
         
-        return equipmentFound
+        self.equipmentConnected = equipmentFound and len(listOfDevices) > 0
+
+        return self.equipmentConnected
 
     def configureTest(self):
-        numCommands = self.configuration['num']
-        if(numCommands == 0):
+        numCommands = int(self.configuration['num'])
+        if(numCommands == 0 or self.equipmentConnected == False):
             return False
 
         commandString = 'cmd'
@@ -55,7 +59,7 @@ class Run_Tests:
 
     
     def resetTest(self):
-        numCommands = self.reset['num']
+        numCommands = int(self.reset['num'])
         if(numCommands == 0):
             return False
 
