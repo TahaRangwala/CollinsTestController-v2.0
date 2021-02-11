@@ -164,7 +164,7 @@ def runGUI():
             window['-OUTPUT2-'].update('')
 
         elif event == 'Reset Tests':
-            passclear
+            pass
 
     #Closes GUI
     window.close()
