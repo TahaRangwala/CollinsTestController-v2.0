@@ -26,7 +26,7 @@ def runGUI():
                     [sg.Text('JSON File:'), sg.InputText(key='-IN4-')],
                     [sg.Button('Add Test')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')], 
-                    [sg.Button('Refresh Configurations')]]
+                    [sg.Button('Configure Selected Test')]]
 
     #Running Tests
     tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test')]]
@@ -140,7 +140,7 @@ def runGUI():
             if(isError):
                 sg.PopupError('Some test configurations have not been established. Please check the user manual to make sure your settings are correct.')   
 
-        elif event == 'Refresh Configurations':
+        elif event == 'Configure Selected Test':
             pass
 
         elif event == 'Mixer Spur Test':
