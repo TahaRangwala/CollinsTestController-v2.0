@@ -113,7 +113,7 @@ def runGUI():
         elif event == 'Add Test':
             isError = False
             equipmentFound = False
-            configuredTests = False
+            #configuredTests = False
             testName = values['-IN3-']
             fileName = values['-IN4-']
 
@@ -128,12 +128,12 @@ def runGUI():
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
                     #configuredTests = PinVPoutTest.configureTest()
                     
-                    if(equipmentFound and configuredTests):
-                        outputString = outputString + testName + ": TEST CONFIGURED\n"
+                    if(equipmentFound):
+                        outputString = outputString + testName + ": TEST ADDED\n"
                     else:
-                        outputString = outputString + testName + ": ERROR, TEST NOT CONFIGURED\n"
+                        outputString = outputString + testName + ": ERROR, CHECK YOUR JSON FILE\n"
                 except:
-                    outputString = outputString + testName + ": ERROR, TEST NOT CONFIGURED\n"
+                    outputString = outputString + testName + ": ERROR, CHECK YOUR JSON FILE\n"
                     isError = True
             window['-OUTPUT2-'].update(outputString)
 
@@ -141,6 +141,12 @@ def runGUI():
                 sg.PopupError('Some test configurations have not been established. Please check the user manual to make sure your settings are correct.')   
 
         elif event == 'Configure Selected Test':
+            if(values['-R1-'] == True):
+                pass
+            elif(values['-R2-'] == True):
+                pass
+            else:
+                
             pass
 
         elif event == 'Mixer Spur Test':

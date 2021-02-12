@@ -6,7 +6,7 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "args:": "argument",
+                "args": "argument",
                 "type": "w",
                 "title": "title"
             }
@@ -16,7 +16,7 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "args:": "argument",
+                "args": "argument",
                 "type": "q",
                 "title": "title"
             }
@@ -26,7 +26,7 @@
             "cmd1": {
                 "Equipment": "Equipment 1",
                 "cmd": "SCPI Command Syntax",
-                "args:": "argument",
+                "args": "argument",
                 "type": "w",
                 "title": "title"
             }

@@ -17,6 +17,7 @@ class Equipment_Connection:
         self.idn_cmd = jsonData[name]['idn_cmd']
         self.write_termination = jsonData[name]['write_termination']
         self.read_termination = jsonData[name]['read_termination']
+        self.isConnected = False
     
     def connect(self):
         error = False
@@ -24,6 +25,7 @@ class Equipment_Connection:
             self.device = self.resourceManager.open_resource(self.address, write_termination = self.write_termination,
             read_termination = self.read_termination)
             self.device.query(self.idn_cmd)
+            self.isConnected = True
         except:
             error = True
         return error

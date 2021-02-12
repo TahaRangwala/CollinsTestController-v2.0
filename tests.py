@@ -26,8 +26,9 @@ class Run_Tests:
             found = False
             for device in listOfDevices:
                 if(device.name == equipment):
-                    self.devices.append(device)
-                    found = True
+                    if(device.isConnected == True):
+                        self.devices.append(device)
+                        found = True
             
             if(found == False):
                 return False
@@ -46,13 +47,16 @@ class Run_Tests:
             currentCommand = commandString + str(i + 1)
             commandType = self.configuration[currentCommand]['type']
             commandSyntax = self.configuration[currentCommand]['cmd']
+            commandArgs = self.configuration[currentCommand]['args']
             equipmentName = self.configuration[currentCommand]['Equipment']
             for device in self.devices:
                 if(device.name == equipmentName):
+                    fullCommand = str(commandSyntax) + str(commandArgs)
+                    print(fullCommand)
                     if(commandType == 'q'):
-                        device.query(commandSyntax)
+                        device.query(fullCommand)
                     else:
-                        if(device.write(commandSyntax) == True):
+                        if(device.write(fullCommand) == True):
                             return False
         
         return True
