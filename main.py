@@ -1,14 +1,11 @@
 import gui
 #from equipment import Equipment_Connection
 #from pinvpoutTest import PinVPout_Test
-#import matplotlib.pyplot as plt
-
-def handle_close(evt):
-    print('Closed Figure!')
+import matplotlib.pyplot as plt
 
 #Runs the main program
 if __name__ == '__main__':
-    gui.runGUI()
+    #gui.runGUI()
     
     """
     #USED FOR DEBUGGING
@@ -24,11 +21,16 @@ if __name__ == '__main__':
     else:
         print(testName + ": ERROR, TEST NOT CONFIGURED\n")"""
 
-
-    """
+    isClosed = False
     fig = plt.figure()
-    fig.canvas.mpl_connect('close_event', handle_close)
+    num = fig.number
 
     plt.text(0.35, 0.5, 'Close Me!', dict(size=30))
-    plt.show()"""
+    plt.show()
 
+    while(isClosed == False):
+        if(plt.fignum_exists(num)):
+            isClosed = False
+        else:
+            isClosed = True
+            print("closed")
