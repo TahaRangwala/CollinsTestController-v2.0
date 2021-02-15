@@ -17,7 +17,7 @@ class Run_Tests:
         self.run = jsonData[name]['run']
         self.reset = jsonData[name]['reset']
         self.equipmentConnected = False
-
+        self.isConfigured = False
         self.devices = []
 
     def addEquipment(self, listOfDevices):
@@ -58,8 +58,8 @@ class Run_Tests:
                     else:
                         if(device.write(fullCommand) == True):
                             return False
-        
-        return True
+        self.isConfigured = True
+        return self.isConfigured
 
     
     def resetTest(self):

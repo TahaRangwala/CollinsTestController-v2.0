@@ -35,6 +35,8 @@ def runGUI():
     tempLayout4 = [[sg.Text('Title'), sg.InputText(key='-IN5-')],
                 [sg.Text('X-Label'), sg.InputText(key='-IN6-')],
                 [sg.Text('Y-Label'), sg.InputText(key='-IN7-')],
+                [sg.Text('Center Freq (MHz)'), sg.InputText(key='-IN8-')],
+                [sg.Text('Freq Span (MHz)'), sg.InputText(key='-IN9-')],
                 [sg.Button('Apply Changes')]]
 
     #Entire GUI Layout
@@ -45,7 +47,7 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(950, 680))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(950, 700))
 
     
     #Setting required data structures and variables
@@ -126,7 +128,6 @@ def runGUI():
                 try:
                     PinVPoutTest = PinVPout_Test(testName, fileName)
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
-                    #configuredTests = PinVPoutTest.configureTest()
                     
                     if(equipmentFound):
                         outputString = outputString + testName + ": TEST ADDED\n"
@@ -146,8 +147,14 @@ def runGUI():
             elif(values['-R2-'] == True):
                 pass
             else:
-                
-            pass
+                if(PinVPoutTest != None):
+                    configuredTests = PinVPoutTest.configureTest()
+                    if(configuredTests == True):
+                        window['-OUTPUT2-'].update("The Pin vs. Pout Test is ready to run")
+                    else:
+                        window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
+                else:
+                    window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
 
         elif event == 'Mixer Spur Test':
             pass
@@ -156,7 +163,16 @@ def runGUI():
             pass
 
         elif event == 'PinvPout Test':
-            pass
+            if(PinVPoutTest != None):
+                if(PinVPoutTest.isConfigured == True):
+                    window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")
+                    testStatus = PinVPoutTest.runTest()
+                    if(testStatus == False):
+                        window['-OUTPUT2-'].update("Please check your Pin vs. Pout test JSON file")
+                else:
+                    window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
+            else:
+                window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
 
         elif event == 'Reset':
             #Resetting Everything
