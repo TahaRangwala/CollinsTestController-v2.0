@@ -1,5 +1,6 @@
 import pyvisa as visa
 import json
+import time
 
 class Equipment_Connection:
     """
@@ -40,6 +41,7 @@ class Equipment_Connection:
         response = None
         try:
             response = self.device.query(cmd)
+            time.sleep(1)
         except Exception as e:
             print(e)
         return response
@@ -48,6 +50,7 @@ class Equipment_Connection:
         error = False
         try:
             self.device.write(cmd)
+            time.sleep(1)
         except:
             error = True
         return error

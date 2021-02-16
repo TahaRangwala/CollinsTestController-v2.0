@@ -19,6 +19,18 @@ class Run_Tests:
         self.equipmentConnected = False
         self.isConfigured = False
         self.devices = []
+        self.graphTitle = "Spectrum Analyzer Trace"
+        self.xLabel = "Frequency (MHZ)"
+        self.yLabel = "Power (dBm)"
+        self.centerFrequency = "2"
+        self.frequencySpan = "2"
+    
+    def changeGraphSettings(self, title, xlabel, ylabel, centerFreq, freqSpan):
+        self.graphTitle = title
+        self.xLabel = xlabel
+        self.yLabel = ylabel
+        self.centerFrequency = centerFreq
+        self.frequencySpan = freqSpan
 
     def addEquipment(self, listOfDevices):
         equipmentFound = True
@@ -34,7 +46,7 @@ class Run_Tests:
                 return False
         
         self.equipmentConnected = equipmentFound and len(listOfDevices) > 0
-
+        print(self.devices)
         return self.equipmentConnected
 
     def configureTest(self):
@@ -49,10 +61,20 @@ class Run_Tests:
             commandSyntax = self.configuration[currentCommand]['cmd']
             commandArgs = self.configuration[currentCommand]['args']
             equipmentName = self.configuration[currentCommand]['Equipment']
+            title = self.configuration[currentCommand]['title']
+            fullCommand = ''
+            print(self.devices)
             for device in self.devices:
                 if(device.name == equipmentName):
-                    fullCommand = str(commandSyntax) + str(commandArgs)
-                    print(fullCommand)
+                    if(title == 'Set Center Frequency'):
+                        fullCommand = str(commandSyntax) + str(self.centerFrequency) + "MHZ"
+                    elif(title == 'Set Frequency Span'):
+                        fullCommand = str(commandSyntax) + str(self.frequencySpan) + "MHZ"
+                    else:
+                        fullCommand = str(commandSyntax) + str(commandArgs)
+                    
+                    #print(fullCommand)
+                    
                     if(commandType == 'q'):
                         device.query(fullCommand)
                     else:

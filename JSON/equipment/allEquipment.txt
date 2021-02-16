@@ -1,0 +1,2 @@
+Function Generator, FunctionGenerator.json
+Spectrum Analyzer, SpectrumAnalyzer.json
