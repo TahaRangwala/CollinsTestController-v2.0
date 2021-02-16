@@ -52,6 +52,14 @@ def runGUI():
     
     #Setting required data structures and variables
     equipmentList = []#all devices connected to PI
+        
+    try:
+        with open("JSON/equipment/allEquipment.txt") as equipmentFileList:
+            for line in equipmentFileList:
+                values = line.split(",")
+                equipmentList.append(Equipment_Connection(values[0].strip(), values[1].strip()))
+    except:
+        sg.PopupError('Error with allEquipment.txt File. Not all pieces of equipment were added!')
 
     #Tests the Program Offers
     MixerSpurTest = None
