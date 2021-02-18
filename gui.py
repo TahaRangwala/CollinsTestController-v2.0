@@ -376,20 +376,45 @@ def runGUI():
             try:
                 testParam = values['-IN10-']
                 listValue = str(values['-LIST-'])
-                commandNum = int(listValue[listValue.find(':') - 1])
+                selectedValue = True
+                if(listValue == '[]'):
+                    selectedValue = False
                 
-                if(testParam.strip() == "" and listValue.strip() == ""):
-                    sg.PopupError('Please enter a parameter')
+                if(selectedValue == True):
+                    commandNum = int(listValue[listValue.find(':') - 1])
+                        
+                    if 'Config' in listValue:
+                        MixerSpurTest.changeCommandParameter(commandNum,'config', str(testParam))
+                    elif 'Run' in listValue:
+                        MixerSpurTest.changeCommandParameter(commandNum,'run', str(testParam))
+                    elif 'Reset Command' in listValue:
+                        MixerSpurTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    else:
+                        sg.PopupError('Your JSON file format is incorrect')
                     
-                if 'Config' in listValue:
-                    MixerSpurTest.changeCommandParameter(commandNum,'config', str(testParam))
-                elif 'Run' in listValue:
-                    MixerSpurTest.changeCommandParameter(commandNum,'run', str(testParam))
-                elif 'Reset Command' in listValue:
-                    MixerSpurTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
+                    configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
+                    
+                    commandNames = []
+                    currentString = ""
+                    defString = ""
+                    for i in range(configNum):
+                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        if(i == 0):
+                            defString = currentString
+                        commandNames.append(currentString)
+                        
+                    for i in range(runNum):
+                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        commandNames.append(currentString)
+
+                    for i in range(resetNum):
+                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        commandNames.append(currentString)
+
+                    window['-LIST-'].update(commandNames)
                 else:
-                    sg.PopupError('Your JSON file format is incorrect')
-                    
+                    sg.Popup('Please select a command')
             except:
                 sg.PopupError('An error occurred. Please try again.')
             
@@ -397,20 +422,45 @@ def runGUI():
             try:
                 testParam = values['-IN11-']
                 listValue = str(values['-LIST2-'])
-                commandNum = int(listValue[listValue.find(':') - 1])
+                selectedValue = True
+                if(listValue == '[]'):
+                    selectedValue = False
                 
-                if(testParam.strip() == "" and listValue.strip() == ""):
-                    sg.PopupError('Please enter a parameter')
+                if(selectedValue == True):
+                    commandNum = int(listValue[listValue.find(':') - 1])
+                        
+                    if 'Config' in listValue:
+                        P1dBTest.changeCommandParameter(commandNum,'config', str(testParam))
+                    elif 'Run' in listValue:
+                        P1dBTest.changeCommandParameter(commandNum,'run', str(testParam))
+                    elif 'Reset Command' in listValue:
+                        P1dBTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    else:
+                        sg.PopupError('Your JSON file format is incorrect')
                     
-                if 'Config' in listValue:
-                    P1dBTest.changeCommandParameter(commandNum,'config', str(testParam))
-                elif 'Run' in listValue:
-                    P1dBTest.changeCommandParameter(commandNum,'run', str(testParam))
-                elif 'Reset Command' in listValue:
-                    P1dBTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
+                    configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
+                    
+                    commandNames = []
+                    currentString = ""
+                    defString = ""
+                    for i in range(configNum):
+                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        if(i == 0):
+                            defString = currentString
+                        commandNames.append(currentString)
+                        
+                    for i in range(runNum):
+                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        commandNames.append(currentString)
+
+                    for i in range(resetNum):
+                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        commandNames.append(currentString)
+
+                    window['-LIST2-'].update(commandNames)
                 else:
-                    sg.PopupError('Your JSON file format is incorrect')
-                    
+                    sg.Popup('Please select a command')
             except:
                 sg.PopupError('An error occurred. Please try again.')
         
@@ -465,20 +515,46 @@ def runGUI():
             try:
                 testParam = values['-IN13-']
                 listValue = str(values['-LIST4-'])
-                commandNum = int(listValue[listValue.find(':') - 1])
+                selectedValue = True
+                if(listValue == '[]'):
+                    selectedValue = False
                 
-                if(testParam.strip() == "" and listValue.strip() == ""):
-                    sg.PopupError('Please enter a parameter')
+                
+                if(selectedValue == True):
+                    commandNum = int(listValue[listValue.find(':') - 1])
+                        
+                    if 'Config' in listValue:
+                        OtherTest.changeCommandParameter(commandNum,'config', str(testParam))
+                    elif 'Run' in listValue:
+                        OtherTest.changeCommandParameter(commandNum,'run', str(testParam))
+                    elif 'Reset Command' in listValue:
+                        OtherTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    else:
+                        sg.PopupError('Your JSON file format is incorrect')
                     
-                if 'Config' in listValue:
-                    OtherTest.changeCommandParameter(commandNum,'config', str(testParam))
-                elif 'Run' in listValue:
-                    OtherTest.changeCommandParameter(commandNum,'run', str(testParam))
-                elif 'Reset Command' in listValue:
-                    OtherTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
+                    configArgs, runArgs, resetArgs = OtherTest.getArgsList()
+                    
+                    commandNames = []
+                    currentString = ""
+                    defString = ""
+                    for i in range(configNum):
+                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        if(i == 0):
+                            defString = currentString
+                        commandNames.append(currentString)
+                        
+                    for i in range(runNum):
+                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        commandNames.append(currentString)
+
+                    for i in range(resetNum):
+                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        commandNames.append(currentString)
+
+                    window['-LIST4-'].update(commandNames)
                 else:
-                    sg.PopupError('Your JSON file format is incorrect')
-                
+                    sg.Popup('Please select a command')
             except:
                 sg.PopupError('An error occurred. Please try again.')
         
