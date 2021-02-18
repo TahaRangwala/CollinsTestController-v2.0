@@ -42,7 +42,9 @@ class Equipment_Connection:
         try:
             response = self.device.query(cmd)
             time.sleep(1)
+            #print(response + "the response")
         except Exception as e:
+            #print("ERROR OCCURRED")
             print(e)
         return response
     

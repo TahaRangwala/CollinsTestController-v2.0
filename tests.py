@@ -6,7 +6,7 @@ class Run_Tests:
     Module Used for Running Tests and Gathering Data
     """
 
-    def __init__(self, name, fileName):
+    def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
         fileName = 'JSON/tests/' + fileName
         with open(fileName) as f:
             jsonData = json.load(f)
@@ -19,12 +19,12 @@ class Run_Tests:
         self.equipmentConnected = False
         self.isConfigured = False
         self.devices = []
-        self.graphTitle = "Spectrum Analyzer Trace"
-        self.xLabel = "Frequency (MHZ)"
-        self.yLabel = "Power (dBm)"
-        self.centerFrequency = "2"
-        self.frequencySpan = "2"
-    
+        self.graphTitle = str(title)
+        self.xLabel = str(xlabel)
+        self.yLabel = str(ylabel)
+        self.centerFrequency = str(centerFreq)
+        self.frequencySpan = str(freqSpan)
+        
     def changeGraphSettings(self, title, xlabel, ylabel, centerFreq, freqSpan):
         self.graphTitle = title
         self.xLabel = xlabel
@@ -63,7 +63,7 @@ class Run_Tests:
             equipmentName = self.configuration[currentCommand]['Equipment']
             title = self.configuration[currentCommand]['title']
             fullCommand = ''
-            print(self.devices)
+            #print(self.devices)
             for device in self.devices:
                 if(device.name == equipmentName):
                     if(title == 'Set Center Frequency'):

@@ -22,8 +22,8 @@ def runGUI():
 
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
-                    [sg.Text('Name:'), sg.InputText(key='-IN3-')],
-                    [sg.Text('JSON File:'), sg.InputText(key='-IN4-')],
+                    [sg.Text('Name:'), sg.InputText(default_text = 'PinVPout', key='-IN3-')],
+                    [sg.Text('JSON File:'), sg.InputText(default_text = 'PinVPout.json', key='-IN4-')],
                     [sg.Button('Add Test')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')], 
                     [sg.Button('Configure Selected Test')]]
@@ -66,6 +66,13 @@ def runGUI():
     P1dBTest = None
     PinVPoutTest = None
     OtherTest = None
+    
+    #Default Plot Settings
+    title = "Spectrum Analyzer Trace"
+    xLabel = "Frequency (MHz)"
+    yLabel = "Power (dBm)"
+    centerFreq = 1
+    freqSpan = 1
 
     #Loop running while GUI is open
     while True:
@@ -144,9 +151,9 @@ def runGUI():
                 pass
             elif(values['-R3-'] == True):
                 try:
-                    PinVPoutTest = PinVPout_Test(testName, fileName)
+                    PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel, centerFreq, freqSpan)
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
-                    
+                
                     if(equipmentFound):
                         outputString = outputString + testName + ": TEST ADDED\n"
                     else:
@@ -192,9 +199,10 @@ def runGUI():
                     
                     try:
                         testStatus, theReason = PinVPoutTest.runTest()
-                    except:
+                    except Exception as e:
                         testStatus = False
                         theReason = "Failed"
+                    
                     if(testStatus == False and theReason == "Failed"):
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
@@ -202,9 +210,9 @@ def runGUI():
                     else:
                         window['-OUTPUT2-'].update("Pin vs. Pout Test Completed!")
                 else:
-                    window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
+                    window['-OUTPUT2-'].update("Configure the Pin vs. Pout Test Before Running It")
             else:
-                window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
+                window['-OUTPUT2-'].update("Configure the Pin vs. Pout Test Before Running It")
 
         elif event == 'Reset':
             #Resetting Everything
@@ -223,29 +231,29 @@ def runGUI():
         elif event == 'Apply Plot Changes':
             readyToChange = False
             title = values['-IN5-']
-            xlabel = values['-IN6-']
-            ylabel = values['-IN7-']
-            centerfreq = values['-IN8-']
-            freqspan = values['-IN9-']
+            xLabel = values['-IN6-']
+            yLabel = values['-IN7-']
+            centerFreq = values['-IN8-']
+            freqSpan = values['-IN9-']
             
-            if(title != "" and xlabel != "" and ylabel != ""):
+            if(title != "" and xLabel != "" and yLabel != ""):
                 readyToChange = True
             
             try:
-                int(centerfreq)
-                int(freqspan)
+                int(centerFreq)
+                int(freqSpan)
             except:
                 readyToChange = False
             
             if(readyToChange == True):
                 if(MixerSpurTest != None):
-                    MixerSpurTest.changeGraphSettings(title, xlabel, ylabel, centerfreq, freqspan)
+                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
                 if(P1dBTest != None):
-                    P1dBTest.changeGraphSettings(title, xlabel, ylabel, centerfreq, freqspan)
+                    P1dBTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
                 if(PinVPoutTest != None):
-                    PinVPoutTest.changeGraphSettings(title, xlabel, ylabel, centerfreq, freqspan)
+                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
                 if(OtherTest != None):
-                    OtherTest.changeGraphSettings(title, xlabel, ylabel, centerfreq, freqspan)
+                    OtherTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
                 sg.Popup("Plot settings have been changed for added tests!")
             else:
                 sg.PopupError('Your plot settings are incorrect!')   

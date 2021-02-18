@@ -78,14 +78,14 @@
             "num": 2,
             "cmd1": {
                 "Equipment": "Spectrum Analyzer",
-                "cmd": ":TRACe? TRACE1",
+                "cmd": ":TRAC? TRACE1",
                 "args": "",
                 "type": "q",
                 "title": "Get Trace"
             },
             "cmd2": {
                 "Equipment": "Spectrum Analyzer",
-                "cmd": ":TRACe:MATH:PEAK?",
+                "cmd": ":TRAC:MATH:PEAK?",
                 "args": "",
                 "type": "q",
                 "title": "Get Peak"
