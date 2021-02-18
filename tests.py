@@ -12,10 +12,12 @@ class Run_Tests:
             jsonData = json.load(f)
         
         self.name = name
-        self.equipmentList = jsonData[name]['Equipment List']
-        self.configuration = jsonData[name]['config']
-        self.run = jsonData[name]['run']
-        self.reset = jsonData[name]['reset']
+        self.fileName = fileName
+        self.jsonData = jsonData
+        self.equipmentList = self.jsonData[name]['Equipment List']
+        self.configuration = self.jsonData[name]['config']
+        self.run = self.jsonData[name]['run']
+        self.reset = self.jsonData[name]['reset']
         self.equipmentConnected = False
         self.isConfigured = False
         self.devices = []
@@ -24,6 +26,57 @@ class Run_Tests:
         self.yLabel = str(ylabel)
         self.centerFrequency = str(centerFreq)
         self.frequencySpan = str(freqSpan)
+    
+    def changeCommandParameter(self, commandNum, location, newParam):
+        
+        try:
+            self.jsonData[self.name][location]['cmd' + str(commandNum)]['args'] = newParam
+            
+            with open(self.fileName, "w") as jsonFile:
+                json.dump(self.jsonData, jsonFile)
+                
+            self.configuration = self.jsonData[name]['config']
+            self.run = self.jsonData[name]['run']
+            self.reset = self.jsonData[name]['reset']
+        except:
+            return False
+        
+    def getNumberOfCommands(self):
+        return int(self.configuration['num']), int(self.run['num']), int(self.reset['num'])
+    
+    def getTitlesList(self):
+        configList = []
+        runList = []
+        resetList = []
+        
+        commandString = 'cmd'
+        for i in range(int(self.configuration['num'])):
+            configList.append(str(self.configuration[commandString + str(i+1)]['title']))
+        
+        for i in range(int(self.run['num'])):
+            runList.append(str(self.run[commandString + str(i+1)]['title']))
+            
+        for i in range(int(self.reset['num'])):
+            resetList.append(str(self.reset[commandString + str(i+1)]['title']))   
+        
+        return configList, runList, resetList
+    
+    def getArgsList(self):
+        configList = []
+        runList = []
+        resetList = []
+        
+        commandString = 'cmd'
+        for i in range(int(self.configuration['num'])):
+            configList.append(str(self.configuration[commandString + str(i+1)]['args']))
+        
+        for i in range(int(self.run['num'])):
+            runList.append(str(self.run[commandString + str(i+1)]['args']))
+            
+        for i in range(int(self.reset['num'])):
+            resetList.append(str(self.reset[commandString + str(i+1)]['args']))   
+        
+        return configList, runList, resetList
         
     def changeGraphSettings(self, title, xlabel, ylabel, centerFreq, freqSpan):
         self.graphTitle = title
