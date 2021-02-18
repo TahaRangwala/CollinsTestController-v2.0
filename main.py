@@ -1,12 +1,21 @@
 import gui
 #from equipment import Equipment_Connection
 #from pinvpoutTest import PinVPout_Test
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+#import numpy as np
 
 #Runs the main program
 if __name__ == '__main__':
     gui.runGUI()
     
+    """plt.axis([0, 10, 0, 1])
+
+    for i in range(10):
+        y = np.random.random()
+        plt.plot(i, y)
+        plt.pause(0.05)
+
+    plt.show()"""
     
     #USED FOR DEBUGGING
     """equipmentList = [Equipment_Connection("Function Generator", "FunctionGenerator.json"), Equipment_Connection("Spectrum Analyzer", "SpectrumAnalyzer.json")]
