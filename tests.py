@@ -31,15 +31,13 @@ class Run_Tests:
         
         try:
             self.jsonData[self.name][location]['cmd' + str(commandNum)]['args'] = newParam
-            
-            with open(self.fileName, "w") as jsonFile:
-                json.dump(self.jsonData, jsonFile)
                 
             self.configuration = self.jsonData[name]['config']
             self.run = self.jsonData[name]['run']
             self.reset = self.jsonData[name]['reset']
         except:
             return False
+        return True
         
     def getNumberOfCommands(self):
         return int(self.configuration['num']), int(self.run['num']), int(self.reset['num'])
@@ -141,19 +139,21 @@ class Run_Tests:
         numCommands = int(self.reset['num'])
         if(numCommands == 0):
             return False
-
-        commandString = 'cmd'
-        for i in range(numCommands):
-            currentCommand = commandString + str(i + 1)
-            commandType = self.reset[currentCommand]['type']
-            commandSyntax = self.reset[currentCommand]['cmd']
-            equipmentName = self.reset[currentCommand]['Equipment']
-            for device in self.devices:
-                if(device.name == equipmentName):
-                    if(commandType == 'q'):
-                        device.query(commandSyntax)
-                    else:
-                        if(device.write(commandSyntax)):
-                            return False
-        
-        return True
+        try:
+            commandString = 'cmd'
+            for i in range(numCommands):
+                currentCommand = commandString + str(i + 1)
+                commandType = self.reset[currentCommand]['type']
+                commandSyntax = self.reset[currentCommand]['cmd']
+                equipmentName = self.reset[currentCommand]['Equipment']
+                for device in self.devices:
+                    if(device.name == equipmentName):
+                        if(commandType == 'q'):
+                            device.query(commandSyntax)
+                        else:
+                            if(device.write(commandSyntax)):
+                                return False
+            self.isConfigured = False
+            return True
+        except:
+            return False

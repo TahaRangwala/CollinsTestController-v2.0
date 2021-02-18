@@ -24,7 +24,8 @@ def runGUI():
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')], 
-                    [sg.Button('Configure Selected Test')]]
+                    [sg.Button('Configure Selected Test')],
+                    [sg.Button('Reset Selected Test')]]
 
     #Running Tests
     tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test')]]
@@ -89,8 +90,11 @@ def runGUI():
                         configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
                         
                         currentString = ""
+                        defString = ""
                         for i in range(configNum):
                             currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
@@ -101,7 +105,7 @@ def runGUI():
                             currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
                             commandNames.append(currentString)
 
-                        settingsTab.append(sg.Tab('Mixer Spur Test', [[sg.Listbox(commandNames, default_values = currentString, size=(70,10), enable_events=True, key = '-LIST-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN10-')], [sg.Button('Change Mixer Spur Test Settings')]], tooltip = 'tip'))
+                        settingsTab.append(sg.Tab('Mixer Spur Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN10-')], [sg.Button('Change Mixer Spur Test Settings')]], tooltip = 'tip'))
                 elif(testType == 'p1DBTest'):
                     if(P1dBTest == None):
                         commandNames = []
@@ -111,8 +115,11 @@ def runGUI():
                         configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
                         
                         currentString = ""
+                        defString = ""
                         for i in range(configNum):
                             currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
@@ -123,7 +130,7 @@ def runGUI():
                             currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
                             commandNames.append(currentString)
 
-                        settingsTab.append(sg.Tab('P1dB Test', [[sg.Listbox(commandNames, default_values = currentString, size=(70,10), enable_events=True, key = '-LIST2-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN11-')], [sg.Button('Change P1dB Test Settings')]], tooltip = 'tip'))
+                        settingsTab.append(sg.Tab('P1dB Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST2-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN11-')], [sg.Button('Change P1dB Test Settings')]], tooltip = 'tip'))
                 
                 elif(testType == 'PinvPoutTest'):
                     if(PinVPoutTest == None):
@@ -133,9 +140,12 @@ def runGUI():
                         configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
                         configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
                 
-                        currentString = ""        
+                        currentString = ""
+                        defString = ""
                         for i in range(configNum):
                             currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
@@ -146,7 +156,7 @@ def runGUI():
                             currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
                             commandNames.append(currentString)
 
-                        settingsTab.append(sg.Tab('Pin vs. Pout Test', [[sg.Listbox(commandNames, default_values = currentString, size=(70,10), enable_events=True, key = '-LIST3-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN12-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
+                        settingsTab.append(sg.Tab('Pin vs. Pout Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST3-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN12-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
                 else:
                     if(OtherTest == None):
                         commandNames = []
@@ -156,8 +166,11 @@ def runGUI():
                         configArgs, runArgs, resetArgs = OtherTest.getArgsList()
                         
                         currentString = ""
+                        defString = ""
                         for i in range(configNum):
                             currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
@@ -168,7 +181,7 @@ def runGUI():
                             currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
                             commandNames.append(currentString)
 
-                        settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = currentString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
+                        settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
                 testNum = testNum + 1
                 if(testNum > 4):
                     break
@@ -176,13 +189,13 @@ def runGUI():
         sg.PopupError('Error with allTests.txt File. Not all tests were added!')
         
     if(MixerSpurTest == None):
-        settingsTab.append(sg.Tab('Mixer Spur Test', emptyTab, tooltip = 'tip'))
+        settingsTab.append(sg.Tab('Mixer Spur Test', emptyTab, tooltip = 'Mixer Spur'))
     if(P1dBTest == None):
-        settingsTab.append(sg.Tab('P1dB Test', emptyTab2, tooltip = 'tip'))
+        settingsTab.append(sg.Tab('P1dB Test', emptyTab2, tooltip = 'P1dB'))
     if(PinVPoutTest == None):
-        settingsTab.append(sg.Tab('Pin vs. Pout Test', emptyTab3, tooltip = 'tip'))
+        settingsTab.append(sg.Tab('Pin vs. Pout Test', emptyTab3, tooltip = 'PinvPout'))
     if(OtherTest == None):
-        settingsTab.append(sg.Tab('Other Test', emptyTab4, tooltip = 'tip'))
+        settingsTab.append(sg.Tab('Other Test', emptyTab4, tooltip = 'Other'))
     
     settingsLayout = [[sg.TabGroup([settingsTab], tooltip='Select a command')]]
     
@@ -309,26 +322,166 @@ def runGUI():
                 else:
                     window['-OUTPUT2-'].update("The Other Test is NOT configured correctly")
         
+        elif event == 'Reset Selected Test':
+            if(values['-R1-'] == True):
+                if(MixerSpurTest != None):
+                    equipmentFound = MixerSpurTest.addEquipment(equipmentList)
+                    resetTests = MixerSpurTest.resetTest()
+                    if(resetTests == True and equipmentFound == True):
+                        window['-OUTPUT2-'].update("The Mixer Spur Test was reset")
+                    elif(equipmentFound == False):
+                        window['-OUTPUT2-'].update("The Mixer Spur Test does not have all required test equipment")
+                    else:
+                        window['-OUTPUT2-'].update("The Mixer Spur Test was NOT reset correctly")
+                else:
+                    window['-OUTPUT2-'].update("The Mixer Spur Test was NOT reset correctly")
+            elif(values['-R2-'] == True):
+                if(P1dBTest != None):
+                    equipmentFound = P1dBTest.addEquipment(equipmentList)
+                    resetTests = P1dBTest.resetTest()
+                    if(resetTests == True and equipmentFound == True):
+                        window['-OUTPUT2-'].update("The P1dB Test was reset")
+                    elif(equipmentFound == False):
+                        window['-OUTPUT2-'].update("The P1dB Test does not have all required test equipment")
+                    else:
+                        window['-OUTPUT2-'].update("The P1dB Test was NOT reset correctly")
+                else:
+                    window['-OUTPUT2-'].update("The P1dB Test was NOT reset correctly")
+            elif(values['-R3-'] == True):
+                if(PinVPoutTest != None):
+                    equipmentFound = PinVPoutTest.addEquipment(equipmentList)
+                    resetTests = PinVPoutTest.resetTest()
+                    if(resetTests == True and equipmentFound == True):
+                        window['-OUTPUT2-'].update("The Pin vs. Pout Test was reset")
+                    elif(equipmentFound == False):
+                        window['-OUTPUT2-'].update("The Pin vs. Pout Test does not have all required test equipment")
+                    else:
+                        window['-OUTPUT2-'].update("The Pin vs. Pout Test was NOT reset correctly")
+                else:
+                    window['-OUTPUT2-'].update("The Pin vs. Pout Test was NOT reset correctly")
+            else:
+                if(OtherTest != None):
+                    equipmentFound = OtherTest.addEquipment(equipmentList)
+                    resetTests = OtherTest.resetTest()
+                    if(resetTests == True and equipmentFound == True):
+                        window['-OUTPUT2-'].update("The Other Test was reset")
+                    elif(equipmentFound == False):
+                        window['-OUTPUT2-'].update("The Other Test does not have all required test equipment")
+                    else:
+                        window['-OUTPUT2-'].update("The Other Test was NOT reset correctly")
+                else:
+                    window['-OUTPUT2-'].update("The Other Test was NOT reset correctly")
+        
         elif event == 'Change Mixer Spur Test Settings':
-            pass
+            try:
+                testParam = values['-IN10-']
+                listValue = str(values['-LIST-'])
+                commandNum = int(listValue[listValue.find(':') - 1])
+                
+                if(testParam.strip() == "" and listValue.strip() == ""):
+                    sg.PopupError('Please enter a parameter')
+                    
+                if 'Config' in listValue:
+                    MixerSpurTest.changeCommandParameter(commandNum,'config', str(testParam))
+                elif 'Run' in listValue:
+                    MixerSpurTest.changeCommandParameter(commandNum,'run', str(testParam))
+                elif 'Reset Command' in listValue:
+                    MixerSpurTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                else:
+                    sg.PopupError('Your JSON file format is incorrect')
+                    
+            except:
+                sg.PopupError('An error occurred. Please try again.')
             
         elif event == 'Change P1dB Test Settings':
-            pass
+            try:
+                testParam = values['-IN11-']
+                listValue = str(values['-LIST2-'])
+                commandNum = int(listValue[listValue.find(':') - 1])
+                
+                if(testParam.strip() == "" and listValue.strip() == ""):
+                    sg.PopupError('Please enter a parameter')
+                    
+                if 'Config' in listValue:
+                    P1dBTest.changeCommandParameter(commandNum,'config', str(testParam))
+                elif 'Run' in listValue:
+                    P1dBTest.changeCommandParameter(commandNum,'run', str(testParam))
+                elif 'Reset Command' in listValue:
+                    P1dBTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                else:
+                    sg.PopupError('Your JSON file format is incorrect')
+                    
+            except:
+                sg.PopupError('An error occurred. Please try again.')
         
         elif event == 'Change Pin vs. Pout Test Settings':
             try:
                 testParam = values['-IN12-']
                 listValue = str(values['-LIST3-'])
-                if(testParam == "" and listValue == ""):
+                selectedValue = True
+                if(listValue == '[]'):
+                    selectedValue = False
+                
+                
+                if(selectedValue == True):
+                    commandNum = int(listValue[listValue.find(':') - 1])
+                        
+                    if 'Config' in listValue:
+                        PinVPoutTest.changeCommandParameter(commandNum,'config', str(testParam))
+                    elif 'Run' in listValue:
+                        PinVPoutTest.changeCommandParameter(commandNum,'run', str(testParam))
+                    elif 'Reset Command' in listValue:
+                        PinVPoutTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                    else:
+                        sg.PopupError('Your JSON file format is incorrect')
+                    
+                    configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
+                    configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
+                    
+                    commandNames = []
+                    currentString = ""
+                    defString = ""
+                    for i in range(configNum):
+                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        if(i == 0):
+                            defString = currentString
+                        commandNames.append(currentString)
+                        
+                    for i in range(runNum):
+                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        commandNames.append(currentString)
+
+                    for i in range(resetNum):
+                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        commandNames.append(currentString)
+
+                    window['-LIST3-'].update(commandNames)
+                else:
+                    sg.Popup('Please select a command')
+            except:
+                sg.PopupError('An error occurred. Please try again.')
+                
+        elif event == 'Change Other Test Settings':
+            try:
+                testParam = values['-IN13-']
+                listValue = str(values['-LIST4-'])
+                commandNum = int(listValue[listValue.find(':') - 1])
+                
+                if(testParam.strip() == "" and listValue.strip() == ""):
                     sg.PopupError('Please enter a parameter')
                     
+                if 'Config' in listValue:
+                    OtherTest.changeCommandParameter(commandNum,'config', str(testParam))
+                elif 'Run' in listValue:
+                    OtherTest.changeCommandParameter(commandNum,'run', str(testParam))
+                elif 'Reset Command' in listValue:
+                    OtherTest.changeCommandParameter(commandNum,'reset', str(testParam))
+                else:
+                    sg.PopupError('Your JSON file format is incorrect')
                 
             except:
                 sg.PopupError('An error occurred. Please try again.')
-            
-        elif event == 'Change Other Test Settings':
-            pass
-    
+        
         elif event == 'Mixer Spur Test':
             pass
 
