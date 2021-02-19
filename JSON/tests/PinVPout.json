@@ -56,14 +56,14 @@
          },
          "cmd7":{
             "Equipment":"Spectrum Analyzer",
-            "args":"1MHZ",
+            "args":"2MHZ",
             "cmd":":SENS:FREQ:CENT ",
             "title":"Set Center Frequency",
             "type":"w"
          },
          "cmd8":{
             "Equipment":"Spectrum Analyzer",
-            "args":"1MHZ",
+            "args":"3MHZ",
             "cmd":":SENS:FREQ:SPAN ",
             "title":"Set Frequency Span",
             "type":"w"
@@ -91,14 +91,14 @@
          "cmd1":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
-            "cmd":":TRAC? TRACE1",
+            "cmd":":TRACe? TRACE1",
             "title":"Get Trace",
             "type":"q"
          },
          "cmd2":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
-            "cmd":":TRAC:MATH:PEAK?",
+            "cmd":":TRACe:MATH:PEAK?",
             "title":"Get Peak",
             "type":"q"
          },

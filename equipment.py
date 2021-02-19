@@ -24,7 +24,7 @@ class Equipment_Connection:
         error = False
         try:
             self.device = self.resourceManager.open_resource(self.address, write_termination = self.write_termination,
-            read_termination = self.read_termination)
+            read_termination = self.read_termination, timeout = self.timeout)
             self.device.query(self.idn_cmd)
             self.isConnected = True
         except:
@@ -41,7 +41,7 @@ class Equipment_Connection:
         response = None
         try:
             response = self.device.query(cmd)
-            time.sleep(1)
+            time.sleep(2)
             #print(response + "the response")
         except Exception as e:
             #print("ERROR OCCURRED")

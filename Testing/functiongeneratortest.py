@@ -26,15 +26,20 @@ print(SA.query("*IDN?"))
 figure = plt.gcf()
 subplot1 = figure.add_subplot(311)
 
+"""
 print(SA.write(":SENS:FREQ:CENT 1MHZ"))
 print(SA.write(":SENS:FREQ:SPAN 1MHZ"))
 print(SA.write(":TRACe:MATH:PEAK:TABLe:STATe ON"))
 print(SA.write(":TRACe:MATH:PEAK:SORT AMPL"))
-print(SA.query(":TRACe:MATH:PEAK:SORT?"))
+print(SA.query(":TRACe:MATH:PEAK:SORT?"))"""
 
 str_data = str(SA.query(":TRAC? TRACE1")).strip()
-data = SA.query(":TRAC:MATH:PEAK?")
+print(str_data)
+print(SA.write(":TRACe:MATH:PEAK:SORT FREQ"))
+data = SA.query(":TRACe:MATH:PEAK?")
+print(data)
 
+"""
 print(str_data)
 pointFound = str_data.find("  ")
 str_data = str_data.split("  ", 1)[1]
@@ -54,4 +59,4 @@ print(stop)
 subplot1.cla()
 subplot1.plot(x, data_array)
 subplot1.set_xlim(start, stop)
-plt.show()
+plt.show()"""

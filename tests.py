@@ -97,7 +97,7 @@ class Run_Tests:
                 return False
         
         self.equipmentConnected = equipmentFound and len(listOfDevices) > 0
-        print(self.devices)
+        #print(self.devices)
         return self.equipmentConnected
 
     def configureTest(self):

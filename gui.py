@@ -23,7 +23,8 @@ def runGUI():
 
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
-                    [sg.Output(size=(60,10), key='-OUTPUT2-')], 
+                    [sg.Output(size=(60,10), key='-OUTPUT2-')],
+                    [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 
@@ -34,8 +35,8 @@ def runGUI():
     tempLayout4 = [[sg.Text('Title'), sg.InputText(default_text = 'Spectrum Analyzer Trace', key='-IN5-')],
                 [sg.Text('X-Label'), sg.InputText(default_text = 'Frequency (MHz)',key='-IN6-')],
                 [sg.Text('Y-Label'), sg.InputText(default_text = 'Power (dBm)', key='-IN7-')],
-                [sg.Text('Center Frequency (MHz)'), sg.InputText(default_text = '1', key='-IN8-')],
-                [sg.Text('Frequency Span (MHz)'), sg.InputText(default_text = '1', key='-IN9-')],
+                [sg.Text('Center Frequency (MHz)'), sg.InputText(default_text = '2', key='-IN8-')],
+                [sg.Text('Frequency Span (MHz)'), sg.InputText(default_text = '3', key='-IN9-')],
                 [sg.Button('Apply Plot Changes')]]
 
     
@@ -64,8 +65,8 @@ def runGUI():
     title = "Spectrum Analyzer Trace"
     xLabel = "Frequency (MHz)"
     yLabel = "Power (dBm)"
-    centerFreq = 1
-    freqSpan = 1
+    centerFreq = 2
+    freqSpan = 3
     
     settingsTab = []
     emptyTab =  [[sg.T('No test has been added here')]]
@@ -285,11 +286,22 @@ def runGUI():
                         window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
                 else:
                     window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
-            elif(values['-R2-'] == True):
+            elif(values['-R2-'] == True):                
                 if(P1dBTest != None):
+                    isValidImpedance = True
                     equipmentFound = P1dBTest.addEquipment(equipmentList)
                     configuredTests = P1dBTest.configureTest()
-                    if(configuredTests == True and equipmentFound == True):
+                    impedance = values['-INI-']
+                    
+                    try:
+                        float(impedance)
+                        P1dBTest.changeImpedance(impedance)
+                    except:
+                        isValidImpedance = False
+
+                    if(isValidImpedance == False):
+                        sg.Popup('Please input the impedance for the P1dB test!')
+                    elif(configuredTests == True and equipmentFound == True):
                         window['-OUTPUT2-'].update("The P1dB Test is ready to run")
                     elif(equipmentFound == False):
                         window['-OUTPUT2-'].update("The P1dB Test does not have all required test equipment")
@@ -571,11 +583,11 @@ def runGUI():
                 if(PinVPoutTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")
                     
-                    try:
-                        testStatus, theReason = PinVPoutTest.runTest()
-                    except Exception as e:
-                        testStatus = False
-                        theReason = "Failed"
+                    #try:
+                    testStatus, theReason = PinVPoutTest.runTest()
+                    #except Exception as e:
+                    #    testStatus = False
+                    #    theReason = "Failed"
                     
                     if(testStatus == False and theReason == "Failed"):
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")

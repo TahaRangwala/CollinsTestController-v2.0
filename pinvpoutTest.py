@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
-    #print('1')
     str_data = str(plotPoints)
     str_data = str_data.split(" ", 1)[1]
     str_data = str_data.split(',')
@@ -19,56 +18,50 @@ class PinVPout_Test(Run_Tests):
 
     def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan)
-        self.figure = plt.figure()
+        self.figure = None
 
     def runTest(self):
         numCommands = int(self.run['num'])
-        #print(numCommands)
         if(self.equipmentConnected == False and numCommands <= 0):
             return False
         
-        figNum = self.figure.number
-        subplot1 = self.figure.add_subplot(311)
-        
+        #Plot settings for trace
+        frequency = []
+        powerDB = []
+        plt.title(self.graphTitle)
+        plt.xlabel(self.xLabel)
+        plt.ylabel(self.yLabel)
+        plt.show()
+
         iterationCount = 0
         abortTest = False
         commandString = 'cmd'
         while(abortTest == False and iterationCount <= 7):
-            if(plt.fignum_exists(figNum) == False):
-               abortTest = True
             for i in range(numCommands):
                 currentCommand = commandString + str(i + 1)
                 commandType = self.run[currentCommand]['type']
                 commandSyntax = self.run[currentCommand]['cmd']
                 commandArgs = self.run[currentCommand]['args']
                 equipmentName = self.run[currentCommand]['Equipment']
+                title = self.run[currentCommand]['title']
                 for device in self.devices:
                     if(device.name == equipmentName):
                         fullCommand = str(commandSyntax) + str(commandArgs)
                         if(commandType == 'q'):
-                            if(self.run[currentCommand]['title'] == 'Get Trace'):
+                            if(title == 'Get Trace'):
                                 plotPoints = device.query(fullCommand)
                                 frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                print(frequency)
-                                print(powerDB)
-                                print(start)
-                                print(stop)
-                                subplot1.cla()
-                                subplot1.set_xlim(start, stop)
-                                subplot1.set_xlabel(self.xLabel)
-                                subplot1.set_ylabel(self.yLabel)
-                                subplot1.set_title(self.graphTitle)
-                                subplot1.plot(frequency, powerDB)
-                                plt.show()
+                                plt.xlim(start, stop)
+                                plt.plot(frequency, powerDB)
                             else:
                                 device.query(fullCommand)
                         else:
                             if(device.write(fullCommand) == True):
                                 return False, "Failed"
             iterationCount = iterationCount + 1
-            plt.close()
-            #print(iterationCount)
-            
+            if(abortTest == False and not plt.fignum_exists(figNum)):
+                abortTest = True
+
         if(abortTest == True):
             return False, "Aborted"
         
