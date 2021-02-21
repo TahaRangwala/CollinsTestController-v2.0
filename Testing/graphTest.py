@@ -1,41 +1,32 @@
-import datetime as dt
+import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import tmp102
 
-# Create figure for plotting
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-xs = []
-ys = []
+plt.ion()
+a = np.arange(10)
 
-# Initialize communication with TMP102
-tmp102.init()
-
-# This function is called periodically from FuncAnimation
-def animate(i, xs, ys):
-
-    # Read temperature (Celsius) from TMP102
-    temp_c = round(tmp102.read_temp(), 2)
-
-    # Add x and y to lists
-    xs.append(dt.datetime.now().strftime('%H:%M:%S.%f'))
-    ys.append(temp_c)
-
-    # Limit x and y lists to 20 items
-    xs = xs[-20:]
-    ys = ys[-20:]
-
-    # Draw x and y lists
-    ax.clear()
-    ax.plot(xs, ys)
-
-    # Format plot
-    plt.xticks(rotation=45, ha='right')
-    plt.subplots_adjust(bottom=0.30)
-    plt.title('TMP102 Temperature over Time')
-    plt.ylabel('Temperature (deg C)')
-
-# Set up plot to call animate() function periodically
-ani = animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=1000)
+fig,ax = plt.subplots(1,1)
+figNum = fig.number
+print(fig.number)
 plt.show()
+
+b = 10 * np.random.randint(0,10,size=10)
+line, = ax.plot(a,b,'r-')
+ax.set_ylim(0,100)
+ax.set_xlim(0, 10)
+ax.set_xlabel("Frequency (MHz)")
+ax.set_ylabel("Power (dBm)")
+ax.set_title("Spectrum Analyzer Trace")
+
+for i in range(100):
+    if(not plt.fignum_exists(figNum)):
+        print("aborted")
+        break
+    else:
+        try:
+            b = 10 * np.random.randint(0,10,size=10)
+            line.set_data(a,b)
+            plt.draw()
+            plt.pause(0.02)
+        except Exception as e:
+            print('closed')
+    
