@@ -29,7 +29,7 @@ def runGUI():
                     [sg.Button('Reset Selected Test')]]
 
     #Running Tests
-    tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test')]]
+    tempLayout3 = [[sg.Button('Mixer Spur Test'), sg.Button('P1dB Test'), sg.Button('PinvPout Test'), sg.Button('Other Test')]]
 
     #Plot Settings
     tempLayout4 = [[sg.Text('Title'), sg.InputText(default_text = 'Spectrum Analyzer Trace', key='-IN5-')],
@@ -583,11 +583,11 @@ def runGUI():
                 if(PinVPoutTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")
                     
-                    #try:
-                    testStatus, theReason = PinVPoutTest.runTest()
-                    #except Exception as e:
-                    #    testStatus = False
-                    #    theReason = "Failed"
+                    try:
+                        testStatus, theReason = PinVPoutTest.runTest()
+                    except Exception as e:
+                        testStatus = False
+                        theReason = "Failed"
                     
                     if(testStatus == False and theReason == "Failed"):
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")
@@ -599,7 +599,10 @@ def runGUI():
                     window['-OUTPUT2-'].update("Configure the Pin vs. Pout Test Before Running It")
             else:
                 window['-OUTPUT2-'].update("Configure the Pin vs. Pout Test Before Running It")
-
+        
+        elif event == 'Other Test':
+            pass
+        
         elif event == 'Reset':
             #Resetting Everything
             equipmentList = []

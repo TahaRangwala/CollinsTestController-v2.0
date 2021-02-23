@@ -5,18 +5,12 @@
          "Spectrum Analyzer"
       ],
       "config":{
+         "num":10,
          "cmd1":{
             "Equipment":"Function Generator",
             "args":"OFF",
-            "cmd":":OUTPUT",
+            "cmd":":OUTPUT ",
             "title":"Disable Output",
-            "type":"w"
-         },
-         "cmd10":{
-            "Equipment":"Spectrum Analyzer",
-            "args":"AMPL",
-            "cmd":":TRACe:MATH:PEAK:SORT ",
-            "title":"Set Peak Sort Ampl",
             "type":"w"
          },
          "cmd2":{
@@ -75,19 +69,26 @@
             "title":"Enable Peak Table State",
             "type":"w"
          },
-         "num":10
+	 "cmd10":{
+            "Equipment":"Spectrum Analyzer",
+            "args":"AMPL",
+            "cmd":":TRACe:MATH:PEAK:SORT ",
+            "title":"Set Peak Sort Ampl",
+            "type":"w"
+         }
       },
       "reset":{
+	"num":1,
          "cmd1":{
             "Equipment":"Function Generator",
             "args":"",
             "cmd":"*CLS",
             "title":"Reset Device",
             "type":"w"
-         },
-         "num":1
+         }
       },
       "run":{
+	 "num":2,
          "cmd1":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
@@ -101,8 +102,7 @@
             "cmd":":TRACe:MATH:PEAK?",
             "title":"Get Peak",
             "type":"q"
-         },
-         "num":2
+         }
       }
    }
 }

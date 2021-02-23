@@ -18,7 +18,6 @@ class PinVPout_Test(Run_Tests):
 
     def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan)
-        self.figure = None
 
     def runTest(self):
         numCommands = int(self.run['num'])
@@ -26,15 +25,19 @@ class PinVPout_Test(Run_Tests):
             return False
         
         #Plot settings for trace
+        abortTest = False
         frequency = []
         powerDB = []
-        plt.title(self.graphTitle)
-        plt.xlabel(self.xLabel)
-        plt.ylabel(self.yLabel)
+        plt.ion()
+        fig, ax = plt.subplots(1,1)
+        figNum = fig.number
         plt.show()
+        line, = ax.plot(frequency, powerDB,'r-')
+        ax.set_xlabel(self.xLabel)
+        ax.set_ylabel(self.yLabel)
+        ax.set_title(self.graphTitle)
 
         iterationCount = 0
-        abortTest = False
         commandString = 'cmd'
         while(abortTest == False and iterationCount <= 7):
             for i in range(numCommands):
@@ -49,23 +52,36 @@ class PinVPout_Test(Run_Tests):
                         fullCommand = str(commandSyntax) + str(commandArgs)
                         if(commandType == 'q'):
                             if(title == 'Get Trace'):
-                                plotPoints = device.query(fullCommand)
-                                frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                plt.xlim(start, stop)
-                                plt.plot(frequency, powerDB)
+                                if(plt.fignum_exists(figNum) and abortTest == False):
+                                    try:
+                                        plotPoints = device.query(fullCommand)
+                                        #print(plotPoints)
+                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                        ax.set_xlim(start, stop)
+                                        line, = ax.plot(frequency, powerDB,'r-')
+                                        plt.draw()
+                                        plt.pause(0.02)
+                                    except:
+                                        abortTest = True
+                                        break
+                                else:
+                                    print('NOT DOING ANYTHING')
                             else:
                                 device.query(fullCommand)
                         else:
                             if(device.write(fullCommand) == True):
                                 return False, "Failed"
             iterationCount = iterationCount + 1
-            if(abortTest == False and not plt.fignum_exists(figNum)):
+            if(not plt.fignum_exists(figNum)):
                 abortTest = True
+                plt.ioff()
+                plt.show()
+                break
 
         if(abortTest == True):
+            self.isConfigured = False
             return False, "Aborted"
         
-        self.isConfigured = False
         return True, "Success"
         
         
