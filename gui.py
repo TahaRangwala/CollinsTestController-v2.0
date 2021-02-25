@@ -135,6 +135,7 @@ def runGUI():
                         configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
                         configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
+                        PinVPoutTest.configurePowerInPowerLoss()
                 
                         currentString = ""
                         defString = ""
@@ -307,7 +308,16 @@ def runGUI():
                 if(PinVPoutTest != None):
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
                     configuredTests = PinVPoutTest.configureTest()
-                    if(configuredTests == True and equipmentFound == True):
+                    failPower = False
+                    
+                    try:
+                        PinVPoutTest.configurePowerInPowerLoss()
+                    except:
+                        failPower = True
+                    
+                    if(failPower == True):
+                        window['-OUTPUT2-'].update("Check The Pin vs. Pout Test Settings Folder's txt files")
+                    elif(configuredTests == True and equipmentFound == True):
                         window['-OUTPUT2-'].update("The Pin vs. Pout Test is ready to run")
                     elif(equipmentFound == False):
                         window['-OUTPUT2-'].update("The Pin vs. Pout Test does not have all required test equipment")

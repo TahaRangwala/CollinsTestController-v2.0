@@ -26,6 +26,20 @@ class PinVPout_Test(Run_Tests):
         self.powerMeasured = []
         self.peakAmplitude = []
         self.Pin_Pout = []
+        
+    def configurePowerInPowerLoss(self):
+        with open("JSON/tests/PinvPoutSettings/PowerIn.txt") as testFileList:
+            for line in testFileList:
+                values = line.split(",")
+                currentPeakFreq = int(values[0].strip())
+                currentPowerIn = int(values[1].strip())
+                self.peakFreq.append(currentPeakFreq)
+                self.powerIn.append(currentPowerIn)
+                
+        with open("JSON/tests/PinvPoutSettings/PowerLoss.txt") as testFileList:
+            for line in testFileList:
+                currentPowerLoss = int(line.strip())
+                self.powerLoss.append(currentPowerLoss)
 
     def runTest(self):
         numCommands = int(self.run['num'])
