@@ -39,6 +39,7 @@ class PinVPout_Test(Run_Tests):
 
         iterationCount = 0
         commandString = 'cmd'
+        firstTime = False
         while(abortTest == False and iterationCount <= 7):
             for i in range(numCommands):
                 currentCommand = commandString + str(i + 1)
@@ -54,13 +55,20 @@ class PinVPout_Test(Run_Tests):
                             if(title == 'Get Trace'):
                                 if(plt.fignum_exists(figNum) and abortTest == False):
                                     try:
-                                        plotPoints = device.query(fullCommand)
-                                        #print(plotPoints)
-                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                        ax.set_xlim(start, stop)
-                                        line, = ax.plot(frequency, powerDB,'r-')
-                                        plt.draw()
-                                        plt.pause(0.02)
+                                        if(firstTime == False):
+                                            plotPoints = device.query(fullCommand)
+                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                            ax.set_xlim(start, stop)
+                                            line, = ax.plot(frequency, powerDB,'r-')
+                                            plt.draw()
+                                            plt.pause(0.02)
+                                            firstTime = True
+                                        else:
+                                            plotPoints = device.query(fullCommand)
+                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                            line.set_data(frequency, powerDB)
+                                            plt.draw()
+                                            plt.pause(0.02)
                                     except:
                                         abortTest = True
                                         break

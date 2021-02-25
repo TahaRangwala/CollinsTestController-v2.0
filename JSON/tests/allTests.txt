@@ -1,1 +1,4 @@
+MixerSpur, MixerSpur.json, MixerSpurTest
+P1dB, P1dB.json, P1dBTest
 PinVPout, PinVPout.json, PinvPoutTest
+OtherTest, OtherTest.json, OtherTest

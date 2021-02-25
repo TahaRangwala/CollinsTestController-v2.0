@@ -7,84 +7,84 @@
                 "Equipment":"Function Generator",
                 "args":"OFF",
                 "cmd":":OUTPUT ",
-                "title":"Disable Output",
+                "title":"Disable Output CH1",
                 "type":"w"
              },
              "cmd2":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":":VOLT ",
-                "title":"Set Volts",
+                "title":"Set Volts CH1",
                 "type":"w"
              },
              "cmd3":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":":VOLT:OFFSet ",
-                "title":"Set Voltage Offset",
+                "title":"Set Voltage Offset CH1",
                 "type":"w"
              },
              "cmd4":{
                 "Equipment":"Function Generator",
                 "args":"2000",
                 "cmd":":FREQ ",
-                "title":"Set Frequency",
+                "title":"Set Frequency CH1",
                 "type":"w"
              },
              "cmd5":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":":PHASe ",
-                "title":"Set Phase",
+                "title":"Set Phase CH1",
                 "type":"w"
              },
              "cmd6":{
                 "Equipment":"Function Generator",
                 "args":"ON",
                 "cmd":":OUTPUT ",
-                "title":"Enable Output",
+                "title":"Enable Output CH1",
                 "type":"w"
              },
              "cmd7":{
                 "Equipment":"Function Generator",
                 "args":"OFF",
                 "cmd":":OUTPUT2 ",
-                "title":"Disable Output",
+                "title":"Disable Output CH2",
                 "type":"w"
              },
              "cmd8":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":":SOUR2:VOLT ",
-                "title":"Set Volts",
+                "title":"Set Volts CH2",
                 "type":"w"
              },
              "cmd9":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":"SOUR2:VOLT:OFFSet ",
-                "title":"Set Voltage Offset",
+                "title":"Set Voltage Offset CH2",
                 "type":"w"
              },
              "cmd10":{
                 "Equipment":"Function Generator",
                 "args":"2000",
                 "cmd":":SOUR2:FREQ ",
-                "title":"Set Frequency",
+                "title":"Set Frequency CH2",
                 "type":"w"
              },
              "cmd11":{
                 "Equipment":"Function Generator",
                 "args":"1",
                 "cmd":":SOUR2:PHASe ",
-                "title":"Set Phase",
+                "title":"Set Phase CH2",
                 "type":"w"
              },
              "cmd12":{
                 "Equipment":"Function Generator",
                 "args":"ON",
                 "cmd":":OUTPUT2 ",
-                "title":"Enable Output",
+                "title":"Enable Output CH2",
                 "type":"w"
              },
              "cmd13":{

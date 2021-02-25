@@ -32,9 +32,9 @@ class Run_Tests:
         try:
             self.jsonData[self.name][location]['cmd' + str(commandNum)]['args'] = newParam
                 
-            self.configuration = self.jsonData[name]['config']
-            self.run = self.jsonData[name]['run']
-            self.reset = self.jsonData[name]['reset']
+            self.configuration = self.jsonData[self.name]['config']
+            self.run = self.jsonData[self.name]['run']
+            self.reset = self.jsonData[self.name]['reset']
         except:
             return False
         return True
@@ -97,7 +97,6 @@ class Run_Tests:
                 return False
         
         self.equipmentConnected = equipmentFound and len(listOfDevices) > 0
-        #print(self.devices)
         return self.equipmentConnected
 
     def configureTest(self):
@@ -114,7 +113,6 @@ class Run_Tests:
             equipmentName = self.configuration[currentCommand]['Equipment']
             title = self.configuration[currentCommand]['title']
             fullCommand = ''
-            #print(self.devices)
             for device in self.devices:
                 if(device.name == equipmentName):
                     if(title == 'Set Center Frequency'):
@@ -124,7 +122,6 @@ class Run_Tests:
                     else:
                         fullCommand = str(commandSyntax) + str(commandArgs)
                     
-                    #print(fullCommand)
                     
                     if(commandType == 'q'):
                         device.query(fullCommand)
