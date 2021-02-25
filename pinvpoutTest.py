@@ -1,7 +1,7 @@
 from tests import Run_Tests
 import matplotlib.pyplot as plt
 import numpy as np
-from prettytable import PrettyTable
+import plotly.graph_objects as go
 
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str(plotPoints)
@@ -19,7 +19,13 @@ class PinVPout_Test(Run_Tests):
 
     def __init__(self, name, fileName, title, xlabel, ylabel):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
-        self.outputTable = PrettyTable(["Peak Frequency (MHz)", "Power In (dBm)", "Power Measured (dBm)", "Peak Amplitude (dBm)", "Pin-Pout"])
+        self.outputTable = None
+        self.peakFreq = []
+        self.powerIn = []
+        self.powerLoss = []
+        self.powerMeasured = []
+        self.peakAmplitude = []
+        self.Pin_Pout = []
 
     def runTest(self):
         numCommands = int(self.run['num'])

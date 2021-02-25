@@ -70,119 +70,119 @@ def runGUI():
     emptyTab3 =  [[sg.T('No test has been added here')]]  
     emptyTab4 =  [[sg.T('No test has been added here')]]  
 
-    #try:
-    testNum = 1
-    with open("JSON/tests/allTests.txt") as testFileList:
-        for line in testFileList:
-            values = line.split(",")
-            testName = str(values[0].strip())
-            fileName = str(values[1].strip())
-            testType = str(values[2].strip())
-            if(testType == 'MixerSpurTest'):
-                if(MixerSpurTest == None):
-                    commandNames = []
-                    MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel)
-                    configNum, runNum, resetNum = MixerSpurTest.getNumberOfCommands()
-                    configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
-                    configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
-                    currentString = ""
-                    defString = ""
-                    for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
-                        if(i == 0):
-                            defString = currentString
-                        commandNames.append(currentString)
+    try:
+        testNum = 1
+        with open("JSON/tests/allTests.txt") as testFileList:
+            for line in testFileList:
+                values = line.split(",")
+                testName = str(values[0].strip())
+                fileName = str(values[1].strip())
+                testType = str(values[2].strip())
+                if(testType == 'MixerSpurTest'):
+                    if(MixerSpurTest == None):
+                        commandNames = []
+                        MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel)
+                        configNum, runNum, resetNum = MixerSpurTest.getNumberOfCommands()
+                        configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
+                        configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
+                        currentString = ""
+                        defString = ""
+                        for i in range(configNum):
+                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
+                            commandNames.append(currentString)
+                            
+                        for i in range(runNum):
+                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            commandNames.append(currentString)
+
+                        for i in range(resetNum):
+                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            commandNames.append(currentString)
+
+                        settingsTab.append(sg.Tab('Mixer Spur Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN10-')], [sg.Button('Change Mixer Spur Test Settings')]], tooltip = 'tip'))
+                elif(testType == 'P1dBTest'):
+                    if(P1dBTest == None):
+                        commandNames = []
+                        P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel)
+                        configNum, runNum, resetNum = P1dBTest.getNumberOfCommands()
+                        configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
+                        configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
                         
-                    for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
-                        commandNames.append(currentString)
+                        currentString = ""
+                        defString = ""
+                        for i in range(configNum):
+                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
+                            commandNames.append(currentString)
+                            
+                        for i in range(runNum):
+                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            commandNames.append(currentString)
 
-                    for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
-                        commandNames.append(currentString)
+                        for i in range(resetNum):
+                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            commandNames.append(currentString)
 
-                    settingsTab.append(sg.Tab('Mixer Spur Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN10-')], [sg.Button('Change Mixer Spur Test Settings')]], tooltip = 'tip'))
-            elif(testType == 'P1dBTest'):
-                if(P1dBTest == None):
-                    commandNames = []
-                    P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel)
-                    configNum, runNum, resetNum = P1dBTest.getNumberOfCommands()
-                    configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
-                    configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
-                    
-                    currentString = ""
-                    defString = ""
-                    for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
-                        if(i == 0):
-                            defString = currentString
-                        commandNames.append(currentString)
+                        settingsTab.append(sg.Tab('P1dB Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST2-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN11-')], [sg.Button('Change P1dB Test Settings')]], tooltip = 'tip'))
+                
+                elif(testType == 'PinvPoutTest'):
+                    if(PinVPoutTest == None):
+                        commandNames = []
+                        PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel)
+                        configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
+                        configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
+                        configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
+                
+                        currentString = ""
+                        defString = ""
+                        for i in range(configNum):
+                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
+                            commandNames.append(currentString)
+                            
+                        for i in range(runNum):
+                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            commandNames.append(currentString)
+
+                        for i in range(resetNum):
+                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            commandNames.append(currentString)
+
+                        settingsTab.append(sg.Tab('Pin vs. Pout Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST3-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN12-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
+                else:
+                    if(OtherTest == None):
+                        commandNames = []
+                        OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel)
+                        configNum, runNum, resetNum = OtherTest.getNumberOfCommands()
+                        configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
+                        configArgs, runArgs, resetArgs = OtherTest.getArgsList()
                         
-                    for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
-                        commandNames.append(currentString)
+                        currentString = ""
+                        defString = ""
+                        for i in range(configNum):
+                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            if(i == 0):
+                                defString = currentString
+                            commandNames.append(currentString)
+                            
+                        for i in range(runNum):
+                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            commandNames.append(currentString)
 
-                    for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
-                        commandNames.append(currentString)
+                        for i in range(resetNum):
+                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            commandNames.append(currentString)
 
-                    settingsTab.append(sg.Tab('P1dB Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST2-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN11-')], [sg.Button('Change P1dB Test Settings')]], tooltip = 'tip'))
-            
-            elif(testType == 'PinvPoutTest'):
-                if(PinVPoutTest == None):
-                    commandNames = []
-                    PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel)
-                    configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
-                    configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
-                    configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
-            
-                    currentString = ""
-                    defString = ""
-                    for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
-                        if(i == 0):
-                            defString = currentString
-                        commandNames.append(currentString)
-                        
-                    for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
-                        commandNames.append(currentString)
-
-                    for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
-                        commandNames.append(currentString)
-
-                    settingsTab.append(sg.Tab('Pin vs. Pout Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST3-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN12-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
-            else:
-                if(OtherTest == None):
-                    commandNames = []
-                    OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel)
-                    configNum, runNum, resetNum = OtherTest.getNumberOfCommands()
-                    configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
-                    configArgs, runArgs, resetArgs = OtherTest.getArgsList()
-                    
-                    currentString = ""
-                    defString = ""
-                    for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
-                        if(i == 0):
-                            defString = currentString
-                        commandNames.append(currentString)
-                        
-                    for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
-                        commandNames.append(currentString)
-
-                    for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
-                        commandNames.append(currentString)
-
-                    settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Other Test Settings')]], tooltip = 'tip'))
-            testNum = testNum + 1
-            if(testNum > 4):
-                break
-    #except:
-    #sg.PopupError('Error with allTests.txt File. Not all tests were added!')
+                        settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Other Test Settings')]], tooltip = 'tip'))
+                testNum = testNum + 1
+                if(testNum > 4):
+                    break
+    except:
+        sg.PopupError('Error with allTests.txt File. Not all tests were added!')
         
     if(MixerSpurTest == None):
         settingsTab.append(sg.Tab('Mixer Spur Test', emptyTab, tooltip = 'Mixer Spur'))
