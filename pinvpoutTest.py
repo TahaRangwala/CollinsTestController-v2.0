@@ -1,6 +1,7 @@
 from tests import Run_Tests
 import matplotlib.pyplot as plt
 import numpy as np
+from prettytable import PrettyTable
 
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str(plotPoints)
@@ -18,6 +19,7 @@ class PinVPout_Test(Run_Tests):
 
     def __init__(self, name, fileName, title, xlabel, ylabel):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
+        self.outputTable = PrettyTable(["Peak Frequency (MHz)", "Power In (dBm)", "Power Measured (dBm)", "Peak Amplitude (dBm)", "Pin-Pout"])
 
     def runTest(self):
         numCommands = int(self.run['num'])
