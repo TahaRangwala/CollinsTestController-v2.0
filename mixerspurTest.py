@@ -21,8 +21,8 @@ class Mixer_Spur_Test(Run_Tests):
     #          Then, we can make a spur table out of the results we get for those frequencies. For example, if we want 10 integer multiples,
     #          then we have to look at the 1x1, 1x2, ..., 1x10, 2x1, 2x2, ..., 10x10 frequencies. This frequency is evaluated as the absolute value
     #          of one harmonic of one frquency minus the other harmonic of the other frequency
-    def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan) 
+    def __init__(self, name, fileName, title, xlabel, ylabel):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel) 
 
     def runTest(self):
         numCommands = int(self.run['num'])

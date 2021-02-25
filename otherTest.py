@@ -16,8 +16,8 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 
 class Other_Test(Run_Tests):
 
-    def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan) 
+    def __init__(self, name, fileName, title, xlabel, ylabel):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel) 
 
     def runTest(self):
         numCommands = int(self.run['num'])

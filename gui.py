@@ -35,8 +35,6 @@ def runGUI():
     tempLayout4 = [[sg.Text('Title'), sg.InputText(default_text = 'Spectrum Analyzer Trace', key='-IN5-')],
                 [sg.Text('X-Label'), sg.InputText(default_text = 'Frequency (MHz)',key='-IN6-')],
                 [sg.Text('Y-Label'), sg.InputText(default_text = 'Power (dBm)', key='-IN7-')],
-                [sg.Text('Center Frequency (MHz)'), sg.InputText(default_text = '150', key='-IN8-')],
-                [sg.Text('Frequency Span (MHz)'), sg.InputText(default_text = '100', key='-IN9-')],
                 [sg.Button('Apply Plot Changes')]]
 
     
@@ -65,8 +63,6 @@ def runGUI():
     title = "Spectrum Analyzer Trace"
     xLabel = "Frequency (MHz)"
     yLabel = "Power (dBm)"
-    centerFreq = 150
-    freqSpan = 100
     
     settingsTab = []
     emptyTab =  [[sg.T('No test has been added here')]]
@@ -85,7 +81,7 @@ def runGUI():
             if(testType == 'MixerSpurTest'):
                 if(MixerSpurTest == None):
                     commandNames = []
-                    MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel, centerFreq, freqSpan)
+                    MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel)
                     configNum, runNum, resetNum = MixerSpurTest.getNumberOfCommands()
                     configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
                     configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
@@ -109,7 +105,7 @@ def runGUI():
             elif(testType == 'P1dBTest'):
                 if(P1dBTest == None):
                     commandNames = []
-                    P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel, centerFreq, freqSpan)
+                    P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel)
                     configNum, runNum, resetNum = P1dBTest.getNumberOfCommands()
                     configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
                     configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
@@ -135,7 +131,7 @@ def runGUI():
             elif(testType == 'PinvPoutTest'):
                 if(PinVPoutTest == None):
                     commandNames = []
-                    PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel, centerFreq, freqSpan)
+                    PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel)
                     configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
                     configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
                     configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
@@ -160,7 +156,7 @@ def runGUI():
             else:
                 if(OtherTest == None):
                     commandNames = []
-                    OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel, centerFreq, freqSpan)
+                    OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel)
                     configNum, runNum, resetNum = OtherTest.getNumberOfCommands()
                     configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
                     configArgs, runArgs, resetArgs = OtherTest.getArgsList()
@@ -181,7 +177,7 @@ def runGUI():
                         currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
                         commandNames.append(currentString)
 
-                    settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
+                    settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Other Test Settings')]], tooltip = 'tip'))
             testNum = testNum + 1
             if(testNum > 4):
                 break
@@ -206,7 +202,7 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 720))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 650))
         
     #Loop running while GUI is open
     while True:
@@ -719,28 +715,20 @@ def runGUI():
             title = values['-IN5-']
             xLabel = values['-IN6-']
             yLabel = values['-IN7-']
-            centerFreq = values['-IN8-']
-            freqSpan = values['-IN9-']
             
             if(title != "" and xLabel != "" and yLabel != ""):
                 readyToChange = True
             
-            try:
-                int(centerFreq)
-                int(freqSpan)
-            except:
-                readyToChange = False
-            
             if(readyToChange == True):
                 if(MixerSpurTest != None):
-                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
+                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel)
                 if(P1dBTest != None):
-                    P1dBTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
+                    P1dBTest.changeGraphSettings(title, xLabel, yLabel)
                 if(PinVPoutTest != None):
-                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
+                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel)
                 if(OtherTest != None):
-                    OtherTest.changeGraphSettings(title, xLabel, yLabel, centerFreq, freqSpan)
-                sg.Popup("Plot settings have been changed for added tests!\nNOTE: The Plotting Settings Affect Set Center Frequency and Set Frequency Span SCPI Commands")
+                    OtherTest.changeGraphSettings(title, xLabel, yLabel)
+                sg.Popup("Plot settings have been changed for added tests!")
             else:
                 sg.PopupError('Your plot settings are incorrect!')   
 

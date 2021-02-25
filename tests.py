@@ -6,7 +6,7 @@ class Run_Tests:
     Module Used for Running Tests and Gathering Data
     """
 
-    def __init__(self, name, fileName, title, xlabel, ylabel, centerFreq, freqSpan):
+    def __init__(self, name, fileName, title, xlabel, ylabel):
         fileName = 'JSON/tests/' + fileName
         with open(fileName) as f:
             jsonData = json.load(f)
@@ -24,8 +24,8 @@ class Run_Tests:
         self.graphTitle = str(title)
         self.xLabel = str(xlabel)
         self.yLabel = str(ylabel)
-        self.centerFrequency = str(centerFreq)
-        self.frequencySpan = str(freqSpan)
+        self.centerFrequency = 150
+        self.frequencySpan = 100
     
     def changeCommandParameter(self, commandNum, location, newParam):
         
@@ -76,12 +76,10 @@ class Run_Tests:
         
         return configList, runList, resetList
         
-    def changeGraphSettings(self, title, xlabel, ylabel, centerFreq, freqSpan):
+    def changeGraphSettings(self, title, xlabel, ylabel):
         self.graphTitle = title
         self.xLabel = xlabel
         self.yLabel = ylabel
-        self.centerFrequency = centerFreq
-        self.frequencySpan = freqSpan
 
     def addEquipment(self, listOfDevices):
         equipmentFound = True
@@ -116,12 +114,27 @@ class Run_Tests:
             for device in self.devices:
                 if(device.name == equipmentName):
                     if(title == 'Set Center Frequency'):
-                        fullCommand = str(commandSyntax) + str(self.centerFrequency) + "MHZ"
+                        theString = str(commandArgs)
+                        theNum = ""
+                        for i in range(len(theString)):
+                            currentVal = theString[i]
+                            if(str(currentVal).isdigit()):
+                                theNum = theNum + str(currentVal)
+                            else:
+                                break
+                        self.centerFrequency = int(theNum)
                     elif(title == 'Set Frequency Span'):
-                        fullCommand = str(commandSyntax) + str(self.frequencySpan) + "MHZ"
-                    else:
-                        fullCommand = str(commandSyntax) + str(commandArgs)
-                    
+                        theString = str(commandArgs)
+                        theNum = ""
+                        for i in range(len(theString)):
+                            currentVal = theString[i]
+                            if(str(currentVal).isdigit()):
+                                theNum = theNum + str(currentVal)
+                            else:
+                                break
+                        self.frequencySpan = int(theNum)
+                        
+                    fullCommand = str(commandSyntax) + str(commandArgs)
                     
                     if(commandType == 'q'):
                         device.query(fullCommand)
