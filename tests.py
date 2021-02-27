@@ -1,5 +1,6 @@
 from equipment import Equipment_Connection
 import json
+import math
 
 class Run_Tests:
     """
@@ -26,6 +27,7 @@ class Run_Tests:
         self.yLabel = str(ylabel)
         self.centerFrequency = 150
         self.frequencySpan = 100
+        self.RMS = 0
     
     def changeCommandParameter(self, commandNum, location, newParam):
         
@@ -133,7 +135,17 @@ class Run_Tests:
                             else:
                                 break
                         self.frequencySpan = int(theNum)
-                        
+                    elif(title == 'Set Volts'):
+                        theString = str(commandArgs)
+                        theNum = ""
+                        for i in range(len(theString)):
+                            currentVal = theString[i]
+                            if(str(currentVal).isdigit()):
+                                theNum = theNum + str(currentVal)
+                            else:
+                                break
+                        self.RMS = float(float(theNum) / (2 * math.sqrt(2)))
+                    
                     fullCommand = str(commandSyntax) + str(commandArgs)
                     
                     if(commandType == 'q'):

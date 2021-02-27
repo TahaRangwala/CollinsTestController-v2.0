@@ -2,7 +2,7 @@
     "MixerSpur": {
         "Equipment List" : ["Function Generator", "Spectrum Analyzer"],
         "config":{
-            "num": 15,
+            "num": 16,
             "cmd1":{
                 "Equipment":"Function Generator",
                 "args":"OFF",
@@ -106,6 +106,13 @@
                 "args":"ON",
                 "cmd":":TRACe:MATH:PEAK:TABLe:STATe ",
                 "title":"Enable Peak Table State",
+                "type":"w"
+             },
+	     "cmd16":{
+                "Equipment":"Spectrum Analyzer",
+                "args":"-10",
+                "cmd":":DISP:WIN:TRAC:Y:SCAL:RLEV ",
+                "title":"Set Power Reference Level",
                 "type":"w"
              }
         },

@@ -6,6 +6,7 @@ from mixerspurTest import Mixer_Spur_Test
 from p1dBTest import P1dB_Test
 from pinvpoutTest import PinVPout_Test
 from otherTest import Other_Test
+import plotly.graph_objects as go
 
 #Runs the entire GUI
 def runGUI():
@@ -25,6 +26,10 @@ def runGUI():
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
                     [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
+                    [sg.Text('Frequency Range Start (MHz):'), sg.InputText(key = '-INFstart-')],
+                    [sg.Text('Frequency Range Stop (MHz):'), sg.InputText(key = '-INFstop-')],
+                    [sg.Text('Voltage Sweep Start (Vpp):'), sg.InputText(key = '-INVstart-')],
+                    [sg.Text('Voltage Sweep Stop (Vpp):'), sg.InputText(key = '-INVstop-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 
@@ -203,7 +208,7 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 650))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 750))
         
     #Loop running while GUI is open
     while True:
@@ -271,6 +276,7 @@ def runGUI():
         elif event == 'Configure Selected Test':
             if(values['-R1-'] == True):
                 if(MixerSpurTest != None):
+                    window['-OUTPUT2-'].update("Currently configuring the mixer spur test")
                     equipmentFound = MixerSpurTest.addEquipment(equipmentList)
                     configuredTests = MixerSpurTest.configureTest()
                     if(configuredTests == True and equipmentFound == True):
@@ -283,29 +289,45 @@ def runGUI():
                     window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
             elif(values['-R2-'] == True):                
                 if(P1dBTest != None):
+                    window['-OUTPUT2-'].update("Currently configuring the P1dB test")
                     isValidImpedance = True
-                    equipmentFound = P1dBTest.addEquipment(equipmentList)
-                    configuredTests = P1dBTest.configureTest()
+                    equipmentFound = False
+                    configuredTests = False
                     impedance = values['-INI-']
+                    freqStart = values['-INFstart-']
+                    freqStop = values['-INFstop-']
+                    voltStart = values['-INVstart-']
+                    voltStop = values['-INVstop-']
                     
                     try:
                         float(impedance)
+                        float(freqStart)
+                        float(freqStop)
+                        float(voltStart)
+                        float(voltStop)
                         P1dBTest.changeImpedance(impedance)
+                        P1dBTest.setFrequencyRange(freqStart, freqStop)
+                        P1dBTest.setVoltSweepRange(voltStart, voltStop)
                     except:
-                        isValidImpedance = False
+                        isValidImpedance = False                           
 
-                    if(isValidImpedance == False):
-                        sg.Popup('Please input the impedance for the P1dB test!')
-                    elif(configuredTests == True and equipmentFound == True):
-                        window['-OUTPUT2-'].update("The P1dB Test is ready to run")
-                    elif(equipmentFound == False):
-                        window['-OUTPUT2-'].update("The P1dB Test does not have all required test equipment")
+                    if(isValidImpedance == True):
+                        equipmentFound = P1dBTest.addEquipment(equipmentList)
+                        configuredTests = P1dBTest.configureTest()  
+                        if(configuredTests == True and equipmentFound == True):
+                            window['-OUTPUT2-'].update("The P1dB Test is ready to run")
+                        elif(equipmentFound == False):
+                            window['-OUTPUT2-'].update("The P1dB Test does not have all required test equipment")
+                        else:
+                            window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
                     else:
-                        window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
+                        sg.Popup('Please input the impedance, frequency range, and voltage sweep range for the P1dB test!')    
+
                 else:
                     window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
             elif(values['-R3-'] == True):
                 if(PinVPoutTest != None):
+                    window['-OUTPUT2-'].update("Currently configuring the PinVPout test")
                     equipmentFound = PinVPoutTest.addEquipment(equipmentList)
                     configuredTests = PinVPoutTest.configureTest()
                     failPower = False
@@ -327,6 +349,7 @@ def runGUI():
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is NOT configured correctly")
             else:
                 if(OtherTest != None):
+                    window['-OUTPUT2-'].update("Currently configuring the Other test")
                     equipmentFound = OtherTest.addEquipment(equipmentList)
                     configuredTests = OtherTest.configureTest()
                     if(configuredTests == True and equipmentFound == True):
@@ -645,7 +668,7 @@ def runGUI():
             testStatus = False
             theReason = ""
             if(P1dBTest != None):
-                if(OtherTest.isConfigured == True):
+                if(P1dBTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The P1dB Test is Starting\nNOTE: Close the plot window to abort the test")
                     
                     try:
@@ -673,7 +696,7 @@ def runGUI():
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")
                     
                     try:
-                        testStatus, theReason = PinVPoutTest.runTest()
+                        testStatus, theReason, tableOutput = PinVPoutTest.runTest()
                     except Exception as e:
                         testStatus = False
                         theReason = "Failed"
@@ -684,6 +707,7 @@ def runGUI():
                         window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED")
                     else:
                         window['-OUTPUT2-'].update("Pin vs. Pout Test Completed!")
+                        tableOutput.show()
                 else:
                     window['-OUTPUT2-'].update("Configure the Pin vs. Pout Test Before Running It")
             else:

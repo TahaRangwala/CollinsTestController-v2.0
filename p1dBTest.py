@@ -1,6 +1,7 @@
 from tests import Run_Tests
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str(plotPoints)
@@ -19,79 +20,32 @@ class P1dB_Test(Run_Tests):
     def __init__(self, name, fileName, title, xlabel, ylabel):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
         self.impedance = 0
+        self.inputPower = 0
+        self.smallVoltGain = 0
+        self.setVoltCommand = None
+        self.setFreqCommand = None
+        self.traceDataCommand = None
+        self.peakDataCommand = None
+        
+        self.freqStart = 0
+        self.freqStop = 0
+        self.voltStart = 0
+        self.voltStop = 0
     
     def changeImpedance(self, impedance):
         self.impedance = impedance
+    
+    def setFrequencyRange(self, freqStart, freqStop):
+        self.freqStart = freqStart
+        self.freqStop = freqStop
+    
+    def setVoltSweepRange(self, voltStart, voltStop):
+        self.voltStart = voltStart
+        self.voltStop = voltStop
 
     def runTest(self):
         numCommands = int(self.run['num'])
         if(self.equipmentConnected == False and numCommands <= 0):
             return False
         
-        #Plot settings for trace
-        abortTest = False
-        frequency = []
-        powerDB = []
-        plt.ion()
-        fig, ax = plt.subplots(1,1)
-        figNum = fig.number
-        plt.show()
-        line, = ax.plot(frequency, powerDB,'r-')
-        ax.set_xlabel(self.xLabel)
-        ax.set_ylabel(self.yLabel)
-        ax.set_title(self.graphTitle)
-
-        iterationCount = 0
-        commandString = 'cmd'
-        firstTime = False
-        while(abortTest == False and iterationCount <= 7):
-            for i in range(numCommands):
-                currentCommand = commandString + str(i + 1)
-                commandType = self.run[currentCommand]['type']
-                commandSyntax = self.run[currentCommand]['cmd']
-                commandArgs = self.run[currentCommand]['args']
-                equipmentName = self.run[currentCommand]['Equipment']
-                title = self.run[currentCommand]['title']
-                for device in self.devices:
-                    if(device.name == equipmentName):
-                        fullCommand = str(commandSyntax) + str(commandArgs)
-                        if(commandType == 'q'):
-                            if(title == 'Get Trace'):
-                                if(plt.fignum_exists(figNum) and abortTest == False):
-                                    try:
-                                        if(firstTime == False):
-                                            plotPoints = device.query(fullCommand)
-                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                            ax.set_xlim(start, stop)
-                                            line, = ax.plot(frequency, powerDB,'r-')
-                                            plt.draw()
-                                            plt.pause(0.02)
-                                            firstTime = True
-                                        else:
-                                            plotPoints = device.query(fullCommand)
-                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                            line.set_data(frequency, powerDB)
-                                            plt.draw()
-                                            plt.pause(0.02)
-                                    except:
-                                        abortTest = True
-                                        break
-                                else:
-                                    print('NOT DOING ANYTHING')
-                            else:
-                                device.query(fullCommand)
-                        else:
-                            if(device.write(fullCommand) == True):
-                                return False, "Failed"
-            iterationCount = iterationCount + 1
-            if(not plt.fignum_exists(figNum)):
-                abortTest = True
-                plt.ioff()
-                plt.show()
-                break
-
-        if(abortTest == True):
-            self.isConfigured = False
-            return False, "Aborted"
         
-        return True, "Success"

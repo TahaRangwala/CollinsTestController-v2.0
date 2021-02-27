@@ -22,14 +22,14 @@
          },
          "cmd3":{
             "Equipment":"Function Generator",
-            "args":"1",
+            "args":"0",
             "cmd":":VOLT:OFFSet ",
             "title":"Set Voltage Offset",
             "type":"w"
          },
          "cmd4":{
             "Equipment":"Function Generator",
-            "args":"1000",
+            "args":"200000",
             "cmd":":FREQ ",
             "title":"Set Frequency",
             "type":"w"
@@ -88,15 +88,29 @@
          }
       },
       "run":{
-	 "num":2,
-         "cmd1":{
+	 "num":4,
+	 "cmd1":{
+            "Equipment":"Function Generator",
+            "args":"",
+            "cmd":":VOLT ",
+            "title":"Set Volts",
+            "type":"w"
+         },
+         "cmd2":{
+            "Equipment":"Function Generator",
+            "args":"",
+            "cmd":":FREQ ",
+            "title":"Set Frequency",
+            "type":"w"
+         },
+         "cmd3":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
             "cmd":":TRACe? TRACE1",
             "title":"Get Trace",
             "type":"q"
          },
-         "cmd2":{
+         "cmd4":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
             "cmd":":TRACe:MATH:PEAK?",
