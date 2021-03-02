@@ -64,6 +64,12 @@ def runGUI():
     PinVPoutTest = None
     OtherTest = None
     
+    #Default Command Names
+    mixerSpurCommands = None
+    p1DBCommands = None
+    pinpoutCommands = None
+    otherCommands = None
+    
     #Default Plot Settings
     title = "Spectrum Analyzer Trace"
     xLabel = "Frequency (MHz)"
@@ -93,18 +99,38 @@ def runGUI():
                         currentString = ""
                         defString = ""
                         for i in range(configNum):
-                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             if(i == 0):
                                 defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
-                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
 
                         for i in range(resetNum):
-                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
+                        
+                        mixerSpurCommands = commandNames
 
                         settingsTab.append(sg.Tab('Mixer Spur Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN10-')], [sg.Button('Change Mixer Spur Test Settings')]], tooltip = 'tip'))
                 elif(testType == 'P1dBTest'):
@@ -118,19 +144,39 @@ def runGUI():
                         currentString = ""
                         defString = ""
                         for i in range(configNum):
-                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             if(i == 0):
                                 defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
-                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
 
                         for i in range(resetNum):
-                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
 
+                        p1DBCommands = commandNames
+                        
                         settingsTab.append(sg.Tab('P1dB Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST2-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN11-')], [sg.Button('Change P1dB Test Settings')]], tooltip = 'tip'))
                 
                 elif(testType == 'PinvPoutTest'):
@@ -145,19 +191,39 @@ def runGUI():
                         currentString = ""
                         defString = ""
                         for i in range(configNum):
-                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             if(i == 0):
                                 defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
-                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
 
                         for i in range(resetNum):
-                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
-
+                        
+                        pinpoutCommands = commandNames
+                        
                         settingsTab.append(sg.Tab('Pin vs. Pout Test', [[sg.Listbox(commandNames, default_values = defString, size=(70,10), enable_events=True, key = '-LIST3-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN12-')], [sg.Button('Change Pin vs. Pout Test Settings')]], tooltip = 'tip'))
                 else:
                     if(OtherTest == None):
@@ -170,18 +236,38 @@ def runGUI():
                         currentString = ""
                         defString = ""
                         for i in range(configNum):
-                            currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                            tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             if(i == 0):
                                 defString = currentString
                             commandNames.append(currentString)
                             
                         for i in range(runNum):
-                            currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                            tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
 
                         for i in range(resetNum):
-                            currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                            tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                            paramString = "Current Param: " + configArgs[i]
+                            currentString = ""
+                            spacesAdded = ""
+                            while(len(currentString) < 70):
+                                currentString = tempString + spacesAdded + paramString
+                                spacesAdded = spacesAdded + " "
                             commandNames.append(currentString)
+
+                        otherCommands = commandNames
 
                         settingsTab.append(sg.Tab('Other Test', [[sg.Listbox(commandNames, size=(70,10), default_values = defString, enable_events=True, key = '-LIST4-')], [sg.Text('Change the selected command parameter: '), sg.InputText(key='-IN13-')], [sg.Button('Change Other Test Settings')]], tooltip = 'tip'))
                 testNum = testNum + 1
@@ -449,17 +535,35 @@ def runGUI():
                     currentString = ""
                     defString = ""
                     for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         if(i == 0):
                             defString = currentString
                         commandNames.append(currentString)
-                        
+                            
                     for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     window['-LIST-'].update(commandNames)
@@ -506,17 +610,35 @@ def runGUI():
                     currentString = ""
                     defString = ""
                     for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         if(i == 0):
                             defString = currentString
                         commandNames.append(currentString)
-                        
+                            
                     for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     window['-LIST2-'].update(commandNames)
@@ -563,17 +685,35 @@ def runGUI():
                     currentString = ""
                     defString = ""
                     for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         if(i == 0):
                             defString = currentString
                         commandNames.append(currentString)
-                        
+                            
                     for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     window['-LIST3-'].update(commandNames)
@@ -621,17 +761,35 @@ def runGUI():
                     currentString = ""
                     defString = ""
                     for i in range(configNum):
-                        currentString = 'Config Command ' + str(i + 1) + ': ' + str(configTitles[i]) + "     Current Parameter: " + configArgs[i]
+                        tempString = 'Config CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         if(i == 0):
                             defString = currentString
                         commandNames.append(currentString)
-                        
+                            
                     for i in range(runNum):
-                        currentString = 'Run Command ' + str(i + 1) + ': ' + str(runTitles[i]) + "     Current Parameter: " + runArgs[i]
+                        tempString = 'Run CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     for i in range(resetNum):
-                        currentString = 'Reset Command ' + str(i + 1) + ': ' + str(resetTitles[i]) + "     Current Parameter: " + resetArgs[i]
+                        tempString = 'Reset CMD ' + str(i + 1) + ': ' + str(configTitles[i])
+                        paramString = "Current Param: " + configArgs[i]
+                        currentString = ""
+                        spacesAdded = ""
+                        while(len(currentString) < 70):
+                            currentString = tempString + spacesAdded + paramString
+                            spacesAdded = spacesAdded + " "
                         commandNames.append(currentString)
 
                     window['-LIST4-'].update(commandNames)
@@ -741,6 +899,12 @@ def runGUI():
             #Resetting Everything
             window['-OUTPUT-'].update('')
             window['-OUTPUT2-'].update('')
+            
+            #Reset list to default commands
+            window['-LIST-'].update(mixerSpurCommands)
+            window['-LIST2-'].update(p1DBCommands)
+            window['-LIST3-'].update(pinpoutCommands)
+            window['-LIST4-'].update(otherCommands)
             
             sg.Popup("Everything has been reset!")
 

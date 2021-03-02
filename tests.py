@@ -135,16 +135,6 @@ class Run_Tests:
                             else:
                                 break
                         self.frequencySpan = int(theNum)
-                    elif(title == 'Set Volts'):
-                        theString = str(commandArgs)
-                        theNum = ""
-                        for i in range(len(theString)):
-                            currentVal = theString[i]
-                            if(str(currentVal).isdigit()):
-                                theNum = theNum + str(currentVal)
-                            else:
-                                break
-                        self.RMS = float(float(theNum) / (2 * math.sqrt(2)))
                     
                     fullCommand = str(commandSyntax) + str(commandArgs)
                     

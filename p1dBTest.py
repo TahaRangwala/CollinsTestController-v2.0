@@ -27,10 +27,10 @@ class P1dB_Test(Run_Tests):
         self.traceDataCommand = None
         self.peakDataCommand = None
         
-        self.freqStart = 0
-        self.freqStop = 0
-        self.voltStart = 0
-        self.voltStop = 0
+        self.freqStart = None
+        self.freqStop = None
+        self.voltStart = None
+        self.voltStop = None
     
     def changeImpedance(self, impedance):
         self.impedance = impedance
@@ -48,4 +48,12 @@ class P1dB_Test(Run_Tests):
         if(self.equipmentConnected == False and numCommands <= 0):
             return False
         
+        self.RMS = float(float(theNum) / (2 * math.sqrt(2)))
+        self.inputPower = float(math.pow(self.RMS, 2) / float(self.impedance))
+        self.inputPower = 10 * math.log10(1000 * self.inputPower)
+        #self.smallVoltGain = self.inputPower - 
+        
+        print(self.RMS)
+        print(self.inputPower)
+        #print(self.smallVoltGain)
         
