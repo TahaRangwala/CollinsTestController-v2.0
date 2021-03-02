@@ -42,11 +42,32 @@ class P1dB_Test(Run_Tests):
     def setVoltSweepRange(self, voltStart, voltStop):
         self.voltStart = voltStart
         self.voltStop = voltStop
+        
+    def setUpP1dBRunCommands(self, numCommands):
+        commandString = 'cmd'
+        for i in range(numCommands):
+            currentCommand = commandString + str(i + 1)
+            title = self.run[currentCommand]['title']
+            if(title == 'Set Volts'):
+                self.setVoltCommand = self.run[currentCommand]
+            elif(title == 'Set Frequency'):
+                self.setFreqCommand = self.run[currentCommand]
+            elif(title == 'Get Trace'):
+                self.traceDataCommand = self.run[currentCommand]
+            elif(title == 'Get Peak'):
+                self.peakDataCommand = self.run[currentCommand]
+                
+        if(self.setVoltCommand == None or self.setFreqCommand == None or self.traceDataCommand == None or self.peakDataCommand == None):
+            return False
+        else:
+            return True
 
     def runTest(self):
         numCommands = int(self.run['num'])
-        if(self.equipmentConnected == False and numCommands <= 0):
+        foundAllRunCommands = setUpP1dBRunCommands(numCommands)
+        if(self.equipmentConnected == False or numCommands <= 0 or foundAllRunCommands == False):
             return False
+        
         
         self.RMS = float(float(theNum) / (2 * math.sqrt(2)))
         self.inputPower = float(math.pow(self.RMS, 2) / float(self.impedance))
@@ -55,5 +76,5 @@ class P1dB_Test(Run_Tests):
         
         print(self.RMS)
         print(self.inputPower)
-        #print(self.smallVoltGain)
+        
         
