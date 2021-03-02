@@ -26,7 +26,7 @@ class Mixer_Spur_Test(Run_Tests):
 
     def runTest(self):
         numCommands = int(self.run['num'])
-        if(self.equipmentConnected == False and numCommands <= 0):
+        if(self.equipmentConnected == False or numCommands <= 0):
             return False
         
         #Plot settings for trace
