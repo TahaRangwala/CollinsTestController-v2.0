@@ -5,7 +5,7 @@
          "Spectrum Analyzer"
       ],
       "config":{
-         "num":10,
+         "num":11,
          "cmd1":{
             "Equipment":"Function Generator",
             "args":"OFF",
@@ -75,7 +75,14 @@
             "cmd":":TRACe:MATH:PEAK:SORT ",
             "title":"Set Peak Sort Ampl",
             "type":"w"
-         }
+         },
+	"cmd11":{
+            "Equipment":"Spectrum Analyzer",
+            "args":"-10",
+            "cmd":":DISP:WIN:TRAC:Y:SCAL:RLEV ",
+            "title":"Set Power Reference Level",
+            "type":"w"
+        }
       },
       "reset":{
 	"num":1,
