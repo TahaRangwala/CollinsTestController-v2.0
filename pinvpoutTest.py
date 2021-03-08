@@ -30,6 +30,13 @@ class PinVPout_Test(Run_Tests):
         
     def configurePowerInPowerLoss(self):
         self.iterationMax = 0
+        self.outputTable = None
+        self.peakFreq = []
+        self.powerIn = []
+        self.powerLoss = []
+        self.powerMeasured = []
+        self.peakAmplitude = []
+        self.Pin_Pout = []
         with open("JSON/tests/PinvPoutSettings/PowerIn.txt") as testFileList:
             for line in testFileList:
                 values = line.split(",")
@@ -54,13 +61,22 @@ class PinVPout_Test(Run_Tests):
         frequency = []
         powerDB = []
         plt.ion()
-        fig, ax = plt.subplots(1,1)
+        fig, ax = plt.subplots(2,1)
         figNum = fig.number
         plt.show()
-        line, = ax.plot(frequency, powerDB,'r-')
-        ax.set_xlabel(self.xLabel)
-        ax.set_ylabel(self.yLabel)
-        ax.set_title(self.graphTitle)
+        line, = ax[0].plot(frequency, powerDB,'r-')
+        pinpoutLine, = ax[1].plot([], [], 'r-')
+        ax[0].set_xlabel(self.xLabel)
+        ax[0].set_ylabel(self.yLabel)
+        ax[0].set_title(self.graphTitle)
+        ax[1].set_xlabel("Power In (dBm)")
+        ax[1].set_ylabel("Power Out (dBm)")
+        ax[1].set_title('Plot of Power In vs Power Out Values')
+        ax[1].legend(loc = "upper right")
+        
+        #PinPout Settings
+        powerInPlot = []
+        peakAmpPlot = []
         
         #Table Settings
         tableOutput = None
@@ -74,6 +90,8 @@ class PinVPout_Test(Run_Tests):
         iterationCount = 0
         commandString = 'cmd'
         firstTime = False
+        previousPeakFreq = 0
+        peakFreqCount = 0
         
         while(abortTest == False and iterationCount <= self.iterationMax):
             for i in range(numCommands):
@@ -93,14 +111,16 @@ class PinVPout_Test(Run_Tests):
                                         if(firstTime == False):
                                             plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                            ax.set_xlim(start, stop)
-                                            line, = ax.plot(frequency, powerDB,'r-')
+                                            ax[0].set_xlim(start, stop)
+                                            line, = ax[0].plot(frequency, powerDB,'r-')
                                             plt.draw()
                                             plt.pause(0.02)
                                             firstTime = True
-                                            currentPeakFreq = self.peakFreq[iterationCount]
+                                            currentPeakFreq = int(self.peakFreq[iterationCount])
+                                            previousPeakFreq = currentPeakFreq
+                                            scaleCurrentPeakFreq = int(currentPeakFreq * 1000000)
                                             currentPowerIn = self.powerIn[iterationCount]
-                                            centerPoint = int(len(frequency)/2)
+                                            centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
                                             currentPowerMeasured = powerDB[centerPoint]
                                             currentPowerLoss = self.powerLoss[iterationCount]
                                             previousPowerLoss = currentPowerLoss
@@ -115,6 +135,13 @@ class PinVPout_Test(Run_Tests):
                                             peakAmplitudeOutput.append(currentPeakAmplitude)
                                             pinpoutOutput.append(currentPinPout)
                                             
+                                            #Power In vs Power Loss Graph Setup
+                                            lineLabel = str(currentPeakFreq) + " dBm"
+                                            powerInPlot.append(currentPowerIn)
+                                            peakAmpPlot.append(currentPeakAmplitude)
+                                            pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', label = lineLabel)
+                                            peakFreqCount = peakFreqCount + 1
+                                            
                                         else:
                                             plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
@@ -123,8 +150,9 @@ class PinVPout_Test(Run_Tests):
                                             plt.pause(0.02)
                                             
                                             currentPeakFreq = self.peakFreq[iterationCount]
+                                            scaleCurrentPeakFreq = int(currentPeakFreq * 1000000)
                                             currentPowerIn = self.powerIn[iterationCount]
-                                            centerPoint = int(len(frequency)/2)
+                                            centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
                                             currentPowerMeasured = powerDB[centerPoint]
                                             currentPowerLoss = self.powerLoss[iterationCount]
                                             previousPowerLoss = currentPowerLoss
@@ -138,6 +166,22 @@ class PinVPout_Test(Run_Tests):
                                             powerLossOutput.append(currentPowerLoss)
                                             peakAmplitudeOutput.append(currentPeakAmplitude)
                                             pinpoutOutput.append(currentPinPout)
+                                            
+                                            
+                                            #Updating Power In vs Power Out Plot
+                                            if(currentPeakFreq != previousPeakFreq):
+                                                lineLabel = str(currentPeakFreq) + " dBm"
+                                                powerInPlot = []
+                                                peakAmpPlot = []
+                                                powerInPlot.append(currentPowerIn)
+                                                peakAmpPlot.append(currentPeakAmplitude)
+                                                pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', label = lineLabel)
+                                                peakFreqCount = peakFreqCount + 1
+                                                previousPeakFreq = currentPeakFreq
+                                            else:
+                                                powerInPlot.append(currentPowerIn)
+                                                peakAmpPlot.append(currentPeakAmplitude)
+                                                pinpoutLine.set_data(powerInPlot, peakAmpPlot)
                                             
                                     except:
                                         abortTest = True

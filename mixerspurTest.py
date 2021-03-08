@@ -2,7 +2,6 @@ from tests import Run_Tests
 import matplotlib.pyplot as plt
 import numpy as np
 
-# This function is just like the function used for the PinvPout test. It is simply to get data points for plotting
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str(plotPoints)
     str_data = str_data.split(" ", 1)[1]
@@ -17,12 +16,12 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 
 class Mixer_Spur_Test(Run_Tests):
 
-    #2/23/2021 We need to have the user specify amount of integer multple harmonics (think "n" times the frequency of the carrier and/or message)
-    #          Then, we can make a spur table out of the results we get for those frequencies. For example, if we want 10 integer multiples,
-    #          then we have to look at the 1x1, 1x2, ..., 1x10, 2x1, 2x2, ..., 10x10 frequencies. This frequency is evaluated as the absolute value
-    #          of one harmonic of one frquency minus the other harmonic of the other frequency
     def __init__(self, name, fileName, title, xlabel, ylabel):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel) 
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
+        self.matrixSize = 5
+        
+    def changeMatrixSize(self, matrixSize):
+        self.matrixSize = matrixSize
 
     def runTest(self):
         numCommands = int(self.run['num'])

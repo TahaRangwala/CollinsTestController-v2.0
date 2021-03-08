@@ -25,6 +25,7 @@ def runGUI():
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
+                    [sg.Text('Matrix Size (NxN): '), sg.InputText(key = '-INMSize-')],
                     [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
                     [sg.Text('Frequency Range Start (MHz):'), sg.InputText(key = '-INFstart-')],
                     [sg.Text('Frequency Range Stop (MHz):'), sg.InputText(key = '-INFstop-')],
@@ -310,11 +311,12 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 750))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 780))
         
     #Loop running while GUI is open
     while True:
         event, values = window.read()
+        
         if event == sg.WIN_CLOSED or event == 'Close':
             break
 
@@ -379,14 +381,28 @@ def runGUI():
             if(values['-R1-'] == True):
                 if(MixerSpurTest != None):
                     window['-OUTPUT2-'].update("Currently configuring the mixer spur test")
+                    isValidMatrixSize = True
+                    matrixSize = values['-INMSize-']
+                    
+                    try:
+                        int(matrixSize)
+                        MixerSpurTest.changeMatrixSize(matrixSize)
+                    except:
+                        isValidMatrixSize = False
+                    
                     equipmentFound = MixerSpurTest.addEquipment(equipmentList)
                     configuredTests = MixerSpurTest.configureTest()
-                    if(configuredTests == True and equipmentFound == True):
-                        window['-OUTPUT2-'].update("The Mixer Spur Test is ready to run")
-                    elif(equipmentFound == False):
-                        window['-OUTPUT2-'].update("The Mixer Spur Test does not have all required test equipment")
+                    
+                    if(isValidMatrixSize == True):
+                        if(configuredTests == True and equipmentFound == True):
+                            window['-OUTPUT2-'].update("The Mixer Spur Test is ready to run")
+                        elif(equipmentFound == False):
+                            window['-OUTPUT2-'].update("The Mixer Spur Test does not have all required test equipment")
+                        else:
+                            window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
                     else:
-                        window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
+                        sg.Popup('Please input the matrix size for the Mixer Spur Test')    
+                        
                 else:
                     window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
             elif(values['-R2-'] == True):                
