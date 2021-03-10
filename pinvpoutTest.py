@@ -17,8 +17,8 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 
 class PinVPout_Test(Run_Tests):
 
-    def __init__(self, name, fileName, title, xlabel, ylabel):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
         self.outputTable = None
         self.peakFreq = []
         self.powerIn = []
@@ -118,7 +118,17 @@ class PinVPout_Test(Run_Tests):
                                             firstTime = True
                                             currentPeakFreq = int(self.peakFreq[iterationCount])
                                             previousPeakFreq = currentPeakFreq
-                                            scaleCurrentPeakFreq = int(currentPeakFreq * 1000000)
+                                            
+                                            scaleCurrentPeakFreq = 0
+                                            if(self.freqUnits == "GHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000000
+                                            elif(self.freqUnits == "MHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000
+                                            elif(self.freqUnits == "KHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000
+                                            else:
+                                                scaleCurrentPeakFreq = int(currentPeakFreq)
+                                                
                                             currentPowerIn = self.powerIn[iterationCount]
                                             centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
                                             currentPowerMeasured = powerDB[centerPoint]
@@ -136,7 +146,7 @@ class PinVPout_Test(Run_Tests):
                                             pinpoutOutput.append(currentPinPout)
                                             
                                             #Power In vs Power Loss Graph Setup
-                                            lineLabel = str(currentPeakFreq) + " dBm"
+                                            lineLabel = str(currentPeakFreq) + " " + self.freqUnits
                                             powerInPlot.append(currentPowerIn)
                                             peakAmpPlot.append(currentPeakAmplitude)
                                             pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', label = lineLabel)
@@ -150,7 +160,17 @@ class PinVPout_Test(Run_Tests):
                                             plt.pause(0.02)
                                             
                                             currentPeakFreq = self.peakFreq[iterationCount]
-                                            scaleCurrentPeakFreq = int(currentPeakFreq * 1000000)
+                                            
+                                            scaleCurrentPeakFreq = 0
+                                            if(self.freqUnits == "GHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000000
+                                            elif(self.freqUnits == "MHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000
+                                            elif(self.freqUnits == "KHz"):
+                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000
+                                            else:
+                                                scaleCurrentPeakFreq = int(currentPeakFreq)
+                                                
                                             currentPowerIn = self.powerIn[iterationCount]
                                             centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
                                             currentPowerMeasured = powerDB[centerPoint]
@@ -170,7 +190,7 @@ class PinVPout_Test(Run_Tests):
                                             
                                             #Updating Power In vs Power Out Plot
                                             if(currentPeakFreq != previousPeakFreq):
-                                                lineLabel = str(currentPeakFreq) + " dBm"
+                                                lineLabel = str(currentPeakFreq) + " " + self.freqUnits
                                                 powerInPlot = []
                                                 peakAmpPlot = []
                                                 powerInPlot.append(currentPowerIn)
@@ -200,10 +220,6 @@ class PinVPout_Test(Run_Tests):
                 plt.ioff()
                 plt.show()
                 break
-
-        if(abortTest == True):
-            self.isConfigured = False
-            return False, "Aborted", tableOutput
         
         tableOutput = go.Figure(data=[go.Table(
             header=dict(values=['Peak Frequency (MHz)', 'Power In (dBm)', 'Power Measured (dBm)', 'Power Loss', 'Peak Amplitude (dBm)' , 'Pin-Pout'],
@@ -220,7 +236,11 @@ class PinVPout_Test(Run_Tests):
                        fill_color='lightcyan',
                        align='left'))
         ])
-                
+
+        if(abortTest == True):
+            #self.isConfigured = False
+            return False, "Aborted", tableOutput
+        
         return True, "Success", tableOutput
         
         

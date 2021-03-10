@@ -7,7 +7,7 @@ class Run_Tests:
     Module Used for Running Tests and Gathering Data
     """
 
-    def __init__(self, name, fileName, title, xlabel, ylabel):
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
         fileName = 'JSON/tests/' + fileName
         with open(fileName) as f:
             jsonData = json.load(f)
@@ -28,12 +28,12 @@ class Run_Tests:
         self.centerFrequency = 150
         self.frequencySpan = 100
         self.RMS = 0
+        self.freqUnits = freqUnits
     
     def changeCommandParameter(self, commandNum, location, newParam):
         
         try:
             self.jsonData[self.name][location]['cmd' + str(commandNum)]['args'] = newParam
-                
             self.configuration = self.jsonData[self.name]['config']
             self.run = self.jsonData[self.name]['run']
             self.reset = self.jsonData[self.name]['reset']
@@ -78,10 +78,11 @@ class Run_Tests:
         
         return configList, runList, resetList
         
-    def changeGraphSettings(self, title, xlabel, ylabel):
+    def changeGraphSettings(self, title, xlabel, ylabel, freqUnits):
         self.graphTitle = title
         self.xLabel = xlabel
         self.yLabel = ylabel
+        self.freqfreqUnits = freqUnits
 
     def addEquipment(self, listOfDevices):
         equipmentFound = True

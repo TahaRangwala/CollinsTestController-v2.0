@@ -16,8 +16,8 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 
 class Other_Test(Run_Tests):
 
-    def __init__(self, name, fileName, title, xlabel, ylabel):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel) 
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits) 
 
     def runTest(self):
         numCommands = int(self.run['num'])
@@ -87,7 +87,7 @@ class Other_Test(Run_Tests):
                 break
 
         if(abortTest == True):
-            self.isConfigured = False
+            #self.isConfigured = False
             return False, "Aborted"
         
         return True, "Success"

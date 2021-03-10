@@ -17,8 +17,8 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 
 class P1dB_Test(Run_Tests):
 
-    def __init__(self, name, fileName, title, xlabel, ylabel):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel)
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
         self.impedance = 0
         self.inputPower = 0
         self.smallVoltGain = 0

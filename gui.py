@@ -26,9 +26,11 @@ def runGUI():
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
                     [sg.Text('Matrix Size (NxN): '), sg.InputText(key = '-INMSize-')],
+                    [sg.Text('Input Frequency: '), sg.InputText(key = '-INMFreq-')],
+                    [sg.Text('LO Frequency: '), sg.InputText(key = '-INMLO-')],
                     [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
-                    [sg.Text('Frequency Range Start (MHz):'), sg.InputText(key = '-INFstart-')],
-                    [sg.Text('Frequency Range Stop (MHz):'), sg.InputText(key = '-INFstop-')],
+                    [sg.Text('Frequency Range Start:'), sg.InputText(key = '-INFstart-')],
+                    [sg.Text('Frequency Range Stop:'), sg.InputText(key = '-INFstop-')],
                     [sg.Text('Voltage Sweep Start (Vpp):'), sg.InputText(key = '-INVstart-')],
                     [sg.Text('Voltage Sweep Stop (Vpp):'), sg.InputText(key = '-INVstop-')],
                     [sg.Button('Configure Selected Test')],
@@ -38,10 +40,11 @@ def runGUI():
     tempLayout3 = [[sg.Button('Mixer Spur'), sg.Button('P1dB'), sg.Button('PinvPout'), sg.Button('Other')]]
 
     #Plot Settings
-    tempLayout4 = [[sg.Text('Title'), sg.InputText(default_text = 'Spectrum Analyzer Trace', key='-IN5-')],
+    tempLayout4 = [[sg.Text('Plot Title'), sg.InputText(default_text = 'Spectrum Analyzer Trace', key='-IN5-')],
                 [sg.Text('X-Label'), sg.InputText(default_text = 'Frequency (MHz)',key='-IN6-')],
                 [sg.Text('Y-Label'), sg.InputText(default_text = 'Power (dBm)', key='-IN7-')],
-                [sg.Button('Apply Plot Changes')]]
+                [sg.Text('Frequency Units:'), sg.Radio('Hz', 'RADIO2', default=True, key = '-R5-'), sg.Radio('KHz', 'RADIO2', key = '-R6-'), sg.Radio('MHz', 'RADIO2', key = '-R7-', default=True), sg.Radio('GHz', 'RADIO2', key = '-R8-')],
+                [sg.Button('Apply Plot and Table Changes')]]
 
     
     #Setting required data structures and variables
@@ -93,7 +96,7 @@ def runGUI():
                 if(testType == 'MixerSpurTest'):
                     if(MixerSpurTest == None):
                         commandNames = []
-                        MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel)
+                        MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel, "MHz")
                         configNum, runNum, resetNum = MixerSpurTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
                         configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
@@ -141,7 +144,7 @@ def runGUI():
                 elif(testType == 'P1dBTest'):
                     if(P1dBTest == None):
                         commandNames = []
-                        P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel)
+                        P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel, "MHz")
                         configNum, runNum, resetNum = P1dBTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
                         configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
@@ -191,7 +194,7 @@ def runGUI():
                 elif(testType == 'PinvPoutTest'):
                     if(PinVPoutTest == None):
                         commandNames = []
-                        PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel)
+                        PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel, "MHz")
                         configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
                         configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
@@ -241,7 +244,7 @@ def runGUI():
                 else:
                     if(OtherTest == None):
                         commandNames = []
-                        OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel)
+                        OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel, "MHz")
                         configNum, runNum, resetNum = OtherTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
                         configArgs, runArgs, resetArgs = OtherTest.getArgsList()
@@ -308,10 +311,10 @@ def runGUI():
             [sg.Text('')],
             [sg.Frame(layout=tempLayout3, title='Runnable Tests', element_justification='c'), sg.Text('   '), sg.Text('   '), sg.Text('   ')],
             [sg.Text('')],
-            [sg.Frame(layout=tempLayout4, title='Plot Settings', element_justification='c')],
+            [sg.Frame(layout=tempLayout4, title='Plot and Table Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 780))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 845))
         
     #Loop running while GUI is open
     while True:
@@ -383,10 +386,14 @@ def runGUI():
                     window['-OUTPUT2-'].update("Currently configuring the mixer spur test")
                     isValidMatrixSize = True
                     matrixSize = values['-INMSize-']
+                    inputFreq = values['-INMFreq-']
+                    LO = values['-INMLO-']
                     
                     try:
                         int(matrixSize)
-                        MixerSpurTest.changeMatrixSize(matrixSize)
+                        float(inputFreq)
+                        float(LO)
+                        MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, LO)
                     except:
                         isValidMatrixSize = False
                     
@@ -401,7 +408,7 @@ def runGUI():
                         else:
                             window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
                     else:
-                        sg.Popup('Please input the matrix size for the Mixer Spur Test')    
+                        sg.Popup('Please input the matrix size, input frequency, and local osccilator frequency for the Mixer Spur Test')    
                         
                 else:
                     window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
@@ -849,12 +856,13 @@ def runGUI():
         elif event == 'Mixer Spur':
             testStatus = False
             theReason = ""
+            tableOutput = None
             if(MixerSpurTest != None):
                 if(MixerSpurTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The Mixer Spur Test is Starting\nNOTE: Close the plot window to abort the test")
                     
                     try:
-                        testStatus, theReason = MixerSpurTest.runTest()
+                        testStatus, theReason, tableOutput = MixerSpurTest.runTest()
                     except Exception as e:
                         testStatus = False
                         theReason = "Failed"
@@ -863,8 +871,10 @@ def runGUI():
                         window['-OUTPUT2-'].update("Check your JSON File. The Mixer Spur Test Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("Mixer Spur Test Test ABORTED")
+                        tableOutput.show()
                     else:
                         window['-OUTPUT2-'].update("Mixer Spur Test Test Completed!")
+                        tableOutput.show()
                 else:
                     window['-OUTPUT2-'].update("Configure the Mixer Spur Test Test Before Running It")
             else:
@@ -911,6 +921,7 @@ def runGUI():
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED")
+                        tableOutput.show()
                     else:
                         window['-OUTPUT2-'].update("Pin vs. Pout Test Completed!")
                         tableOutput.show()
@@ -956,27 +967,35 @@ def runGUI():
             
             sg.Popup("Everything has been reset!")
 
-        elif event == 'Apply Plot Changes':
+        elif event == 'Apply Plot and Table Changes':
             readyToChange = False
             title = values['-IN5-']
             xLabel = values['-IN6-']
             yLabel = values['-IN7-']
             
+            freqUnits = "MHz"
+            if(values['-R5-'] == True):
+                freqUnits = "Hz"
+            if(values['-R6-'] == True):
+                freqUnits = "KHz"
+            if(values['-R8-'] == True):
+                freqUnits = "GHz"
+                    
             if(title != "" and xLabel != "" and yLabel != ""):
                 readyToChange = True
             
             if(readyToChange == True):
                 if(MixerSpurTest != None):
-                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel)
+                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
                 if(P1dBTest != None):
-                    P1dBTest.changeGraphSettings(title, xLabel, yLabel)
+                    P1dBTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
                 if(PinVPoutTest != None):
-                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel)
+                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
                 if(OtherTest != None):
-                    OtherTest.changeGraphSettings(title, xLabel, yLabel)
-                sg.Popup("Plot settings have been changed for added tests!")
+                    OtherTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
+                sg.Popup("Plot and table settings have been changed for added tests!")
             else:
-                sg.PopupError('Your plot settings are incorrect!')   
+                sg.PopupError('Your plot and table settings are incorrect!')   
 
                 
 
