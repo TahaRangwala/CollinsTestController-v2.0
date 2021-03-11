@@ -95,19 +95,12 @@
          }
       },
       "run":{
-	 "num":2,
+	 "num":1,
          "cmd1":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
             "cmd":":TRACe? TRACE1",
             "title":"Get Trace",
-            "type":"q"
-         },
-         "cmd2":{
-            "Equipment":"Spectrum Analyzer",
-            "args":"",
-            "cmd":":TRACe:MATH:PEAK?",
-            "title":"Get Peak",
             "type":"q"
          }
       }

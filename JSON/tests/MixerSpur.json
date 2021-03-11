@@ -127,7 +127,7 @@
              }
         },
         "run":{
-            "num": 3,
+            "num": 2,
             "cmd1":{
                 "Equipment":"Spectrum Analyzer",
                 "args":"",
@@ -135,14 +135,7 @@
                 "title":"Get Trace",
                 "type":"q"
              },
-             "cmd2":{
-                "Equipment":"Spectrum Analyzer",
-                "args":"",
-                "cmd":":TRACe:MATH:PEAK?",
-                "title":"Get Peak",
-                "type":"q"
-             },
-	     "cmd3":{
+	     "cmd2":{
                 "Equipment":"Spectrum Analyzer",
                 "args":"",
                 "cmd":":SENS:FREQ:CENT ",

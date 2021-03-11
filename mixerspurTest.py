@@ -154,10 +154,10 @@ class Mixer_Spur_Test(Run_Tests):
                                                     currentString = str(currentPowerMeasured) + "dBm"
                                                 elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
                                                     freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
-                                                    device.query(freqCommand)
+                                                    isFreqError = device.write(freqCommand)
                                                     plotPoints = device.query(fullCommand)
                                                     frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
-                                                    if(len(frequency) != 0):
+                                                    if(len(frequency) != 0 and isFreqError == True):
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
                                                         currentString = str(currentPowerMeasured) + "dBm"
@@ -193,10 +193,10 @@ class Mixer_Spur_Test(Run_Tests):
                                                         currentString = str(currentPowerMeasured) + "dBm"
                                                     elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
                                                         freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
-                                                        device.query(freqCommand)
+                                                        isFreqError = device.write(freqCommand)
                                                         plotPoints = device.query(fullCommand)
                                                         frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
-                                                        if(len(frequency) != 0):
+                                                        if(len(frequency) != 0 and isFreqError == False):
                                                             closestIndex = findClosestIndex(frequency, currentFrequency)
                                                             currentPowerMeasured = powerDB[closestIndex]
                                                             currentString = str(currentPowerMeasured) + "dBm"
