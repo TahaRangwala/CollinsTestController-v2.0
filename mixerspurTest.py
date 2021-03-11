@@ -5,15 +5,30 @@ import plotly.graph_objects as go
 
 def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str(plotPoints)
-    str_data = str_data.split(" ", 1)[1]
-    str_data = str_data.split(',')
-    data_array = np.array(list(map(float, str_data[1:])))
+    if(str_data != None):
+        str_data = str_data.split(" ", 1)[1]
+        str_data = str_data.split(',')
+        data_array = np.array(list(map(float, str_data[1:])))
 
-    start = (int(centerFreq)-0.5*int(freqSpan)) * 10**6
-    stop = (int(centerFreq)+0.5*int(freqSpan)) * 10**6
-    step = (stop-start)/len(data_array)
-    x = np.arange(start, stop, step)
-    return x, data_array, start, stop
+        start = (int(centerFreq)-0.5*int(freqSpan)) * 10**6
+        stop = (int(centerFreq)+0.5*int(freqSpan)) * 10**6
+        step = (stop-start)/len(data_array)
+        x = np.arange(start, stop, step)
+        return x, data_array, start, stop
+    else:
+        return [], [], 0, 0
+
+def findClosestIndex(values, val):
+    minPosition = 0
+    minDifference = float('inf')
+    for i in range(len(values)):
+        currentVal = values[i]
+        currentDiff = abs(currentVal - val)
+        if(currentDiff < minDifference):
+            minDifference = currentDiff
+            minPosition = i
+        
+    return minPosition
 
 class Mixer_Spur_Test(Run_Tests):
 
@@ -23,16 +38,30 @@ class Mixer_Spur_Test(Run_Tests):
         self.inputFrequency = 0.0
         self.localOscillator = 0.0
         self.RF = 0.0
+        self.freqStart = 0.0
+        self.freqStop = 0.0
+        self.setCenterFreqCommand = None
         
-    def changeMixerParameters(self, matrixSize, inputFreq, localOscillate):
+    def changeMixerParameters(self, matrixSize, inputFreq, localOscillate, RF, freqStart, freqStop):
         self.matrixSize = int(matrixSize)
         self.inputFrequency = inputFreq
         self.localOscillator = localOscillate
-        self.RF = self.inputFrequency + self.localOscillator
-
+        self.RF = RF
+        self.freqStart = freqStart
+        self.freqStop = freqStop
+        
     def runTest(self):
         numCommands = int(self.run['num'])
-        if(self.equipmentConnected == False or numCommands <= 0):
+        foundAllCommands = False
+        
+        commandString = 'cmd'
+        for i in range(numCommands):
+            currentCommand = commandString + str(i + 1)
+            title = self.run[currentCommand]['title']
+            if(title == 'Set Center Frequency'):
+                self.setCenterFreqCommand = self.run[currentCommand]
+                   
+        if(self.equipmentConnected == False or numCommands <= 0 or self.setCenterFreqCommand == None):
             return False
         
         #Plot settings for trace
@@ -54,6 +83,7 @@ class Mixer_Spur_Test(Run_Tests):
         cellLabel = []
         scaleLocalOscillator = []
         scaleRF = []
+        scaleFreq = []
         cellValues = []
         
         freqScaler = 0
@@ -66,21 +96,26 @@ class Mixer_Spur_Test(Run_Tests):
         else:
             freqScaler = 1
         
-        for i in range(self.matrixSize):
-            scaleLocalOscillator.append((i+1) * float(self.localOscillator) * freqScaler)
-            scaleRF.append((i+1) * float(self.RF) * freqScaler)
-            cellString = "<b>" + str(i+1) + "x" + str(self.localOscillator) + freqUnits + "</b>"
+        self.freqStart = float(self.freqStart) * freqScaler
+        self.freqStop = float(self.freqStop) * freqScaler
+        
+        for i in range(self.matrixSize + 1):
+            scaleLocalOscillator.append(i * float(self.localOscillator) * freqScaler)
+            scaleRF.append(i * float(self.RF) * freqScaler)
+            scaleFreq.append(i * float(self.inputFrequency) * freqScaler)
+            cellString = "<b>" + str(i) + "x" + str(self.localOscillator) + self.freqUnits + "</b>"
             cellLabel.append(cellString)
-            headerString = "<b>" + str(i+1) + "x" + str(self.RF) + freqUnits + "</b>"
+            headerString = "<b>" + str(i) + "x" + str(self.inputFrequency) + self.freqUnits + "</b>"
             headerLabel.append(headerString)
         
         cellValues.append(cellLabel)
 
         iterationCount = 0
-        iterationMax = self.matrixSize
+        iterationMax = self.matrixSize + 1
+        previousIterationCount = 0
         commandString = 'cmd'
         firstTime = False
-        while(abortTest == False and iterationCount <= iterationMax):
+        while(abortTest == False and iterationCount < iterationMax):
             for i in range(numCommands):
                 currentCommand = commandString + str(i + 1)
                 commandType = self.run[currentCommand]['type']
@@ -92,7 +127,9 @@ class Mixer_Spur_Test(Run_Tests):
                     if(device.name == equipmentName):
                         fullCommand = str(commandSyntax) + str(commandArgs)
                         if(commandType == 'q'):
-                            if(title == 'Get Trace'):
+                            if(title == 'Set Center Frequency'):
+                                continue
+                            elif(title == 'Get Trace'):
                                 if(plt.fignum_exists(figNum) and abortTest == False):
                                     try:
                                         if(firstTime == False):
@@ -106,14 +143,29 @@ class Mixer_Spur_Test(Run_Tests):
                                             
                                             #Spur Table 
                                             currentCell = []
-                                            currentRF = scaleRF[iterationCount]
-                                            for j in range(len(scaleOscillator)):
+                                            currentFreq = scaleFreq[iterationCount]
+                                            length = len(scaleLocalOscillator)
+                                            for j in range(len(scaleLocalOscillator)):
                                                 currentString = ""
-                                                currentFrequency = currentRF - scaleOscillator[j]
+                                                currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
                                                 if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
-                                                    centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-currentFrequency))]))
-                                                    currentPowerMeasured = powerDB[centerPoint]
+                                                    closestIndex = findClosestIndex(frequency, currentFrequency)
+                                                    currentPowerMeasured = powerDB[closestIndex]
                                                     currentString = str(currentPowerMeasured) + "dBm"
+                                                elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
+                                                    freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
+                                                    device.query(freqCommand)
+                                                    plotPoints = device.query(fullCommand)
+                                                    frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
+                                                    if(len(frequency) != 0):
+                                                        closestIndex = findClosestIndex(frequency, currentFrequency)
+                                                        currentPowerMeasured = powerDB[closestIndex]
+                                                        currentString = str(currentPowerMeasured) + "dBm"
+                                                        line.set_data(frequency, powerDB)
+                                                        plt.draw()
+                                                        plt.pause(0.02)
+                                                    else:
+                                                        currentString = "ERROR"
                                                 else:
                                                     currentString = "Out of Range"
                                                 
@@ -130,20 +182,37 @@ class Mixer_Spur_Test(Run_Tests):
                                             
                                             #Update Spur Table
                                             currentCell = []
-                                            currentRF = scaleRF[iterationCount]
-                                            for j in range(len(scaleOscillator)):
-                                                currentString = ""
-                                                currentFrequency = currentRF - scaleOscillator[j]
-                                                if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
-                                                    centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-currentFrequency))]))
-                                                    currentPowerMeasured = powerDB[centerPoint]
-                                                    currentString = str(currentPowerMeasured) + "dBm"
-                                                else:
-                                                    currentString = "Out of Range"
-                                                
-                                                currentCell.append(currentString)
-                                            
-                                            cellValues.append(currentCell)
+                                            currentFreq = scaleFreq[iterationCount]
+                                            if(iterationCount != previousIterationCount):
+                                                for j in range(len(scaleLocalOscillator)):
+                                                    currentString = ""
+                                                    currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
+                                                    if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
+                                                        closestIndex = findClosestIndex(frequency, currentFrequency)
+                                                        currentPowerMeasured = powerDB[closestIndex]
+                                                        currentString = str(currentPowerMeasured) + "dBm"
+                                                    elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
+                                                        freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
+                                                        device.query(freqCommand)
+                                                        plotPoints = device.query(fullCommand)
+                                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
+                                                        if(len(frequency) != 0):
+                                                            closestIndex = findClosestIndex(frequency, currentFrequency)
+                                                            currentPowerMeasured = powerDB[closestIndex]
+                                                            currentString = str(currentPowerMeasured) + "dBm"
+                                                            line.set_data(frequency, powerDB)
+                                                            plt.draw()
+                                                            plt.pause(0.02)
+                                                        else:
+                                                            currentString = "ERROR"
+                                                    else:
+                                                        currentString = "Out of Range"
+                                                        
+                                                    currentCell.append(currentString)
+                                                                                            
+                                                cellValues.append(currentCell)
+                                            else:
+                                                continue
                                     except:
                                         abortTest = True
                                         break
@@ -154,6 +223,7 @@ class Mixer_Spur_Test(Run_Tests):
                         else:
                             if(device.write(fullCommand) == True):
                                 return False, "Failed", tableOutput
+            previousIterationCount = iterationCount
             iterationCount = iterationCount + 1
             if(not plt.fignum_exists(figNum)):
                 abortTest = True

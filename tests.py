@@ -82,7 +82,7 @@ class Run_Tests:
         self.graphTitle = title
         self.xLabel = xlabel
         self.yLabel = ylabel
-        self.freqfreqUnits = freqUnits
+        self.freqUnits = freqUnits
 
     def addEquipment(self, listOfDevices):
         equipmentFound = True

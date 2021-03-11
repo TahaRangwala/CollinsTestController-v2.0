@@ -12,28 +12,28 @@
              },
              "cmd2":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"2.5",
                 "cmd":":VOLT ",
                 "title":"Set Volts CH1",
                 "type":"w"
              },
              "cmd3":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"0",
                 "cmd":":VOLT:OFFSet ",
                 "title":"Set Voltage Offset CH1",
                 "type":"w"
              },
              "cmd4":{
                 "Equipment":"Function Generator",
-                "args":"2000",
+                "args":"100000",
                 "cmd":":FREQ ",
                 "title":"Set Frequency CH1",
                 "type":"w"
              },
              "cmd5":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"0",
                 "cmd":":PHASe ",
                 "title":"Set Phase CH1",
                 "type":"w"
@@ -54,28 +54,28 @@
              },
              "cmd8":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"0.1",
                 "cmd":":SOUR2:VOLT ",
                 "title":"Set Volts CH2",
                 "type":"w"
              },
              "cmd9":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"0",
                 "cmd":"SOUR2:VOLT:OFFSet ",
                 "title":"Set Voltage Offset CH2",
                 "type":"w"
              },
              "cmd10":{
                 "Equipment":"Function Generator",
-                "args":"2000",
+                "args":"5000000",
                 "cmd":":SOUR2:FREQ ",
                 "title":"Set Frequency CH2",
                 "type":"w"
              },
              "cmd11":{
                 "Equipment":"Function Generator",
-                "args":"1",
+                "args":"0",
                 "cmd":":SOUR2:PHASe ",
                 "title":"Set Phase CH2",
                 "type":"w"
@@ -89,7 +89,7 @@
              },
              "cmd13":{
                 "Equipment":"Spectrum Analyzer",
-                "args":"2MHZ",
+                "args":"5MHZ",
                 "cmd":":SENS:FREQ:CENT ",
                 "title":"Set Center Frequency",
                 "type":"w"
@@ -127,7 +127,7 @@
              }
         },
         "run":{
-            "num": 2,
+            "num": 3,
             "cmd1":{
                 "Equipment":"Spectrum Analyzer",
                 "args":"",
@@ -141,6 +141,13 @@
                 "cmd":":TRACe:MATH:PEAK?",
                 "title":"Get Peak",
                 "type":"q"
+             },
+	     "cmd3":{
+                "Equipment":"Spectrum Analyzer",
+                "args":"",
+                "cmd":":SENS:FREQ:CENT ",
+                "title":"Set Center Frequency",
+                "type":"w"
              }
         }
     }

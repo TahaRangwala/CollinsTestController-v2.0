@@ -25,9 +25,10 @@ def runGUI():
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
-                    [sg.Text('Matrix Size (NxN): '), sg.InputText(key = '-INMSize-')],
-                    [sg.Text('Input Frequency: '), sg.InputText(key = '-INMFreq-')],
-                    [sg.Text('LO Frequency: '), sg.InputText(key = '-INMLO-')],
+                    [sg.Text('Number of Harmonics: '), sg.InputText(key = '-INMSize-')],
+                    [sg.Text('Input Frequency (IF): '), sg.InputText(key = '-INMFreq-')],
+                    [sg.Text('Local Oscillator Frequency (LO): '), sg.InputText(key = '-INMLO-')],
+                    [sg.Text('Radio Frequency (RF): '), sg.InputText(key = '-INMRF-')],
                     [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
                     [sg.Text('Frequency Range Start:'), sg.InputText(key = '-INFstart-')],
                     [sg.Text('Frequency Range Stop:'), sg.InputText(key = '-INFstop-')],
@@ -314,7 +315,7 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot and Table Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 845))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1500, 870))
         
     #Loop running while GUI is open
     while True:
@@ -383,24 +384,51 @@ def runGUI():
         elif event == 'Configure Selected Test':
             if(values['-R1-'] == True):
                 if(MixerSpurTest != None):
-                    window['-OUTPUT2-'].update("Currently configuring the mixer spur test")
-                    isValidMatrixSize = True
+                    allInputs = True
                     matrixSize = values['-INMSize-']
                     inputFreq = values['-INMFreq-']
                     LO = values['-INMLO-']
+                    RF = values['-INMRF-']
+                    freqStart = values['-INFstart-']
+                    freqStop = values['-INFstop-']
                     
-                    try:
-                        int(matrixSize)
-                        float(inputFreq)
-                        float(LO)
-                        MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, LO)
-                    except:
-                        isValidMatrixSize = False
+                    if(str(matrixSize) != "" and str(inputFreq) != "" and str(LO) != "" and str(RF) == ""):
+                        try:
+                            int(matrixSize)
+                            float(inputFreq)
+                            float(LO)
+                            float(freqStart)
+                            float(freqStop)
+                            MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, LO, 0, freqStart, freqStop)
+                        except:
+                            allInputs = False
+                    elif(str(matrixSize) != "" and str(inputFreq) != "" and str(RF) != "" and str(LO) == ""):
+                        try:
+                            int(matrixSize)
+                            float(inputFreq)
+                            float(RF)
+                            float(freqStart)
+                            float(freqStop)
+                            MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, 0, RF, freqStart, freqStop)
+                        except:
+                            allInputs = False
+                    elif(str(matrixSize) != "" and str(LO) != "" and str(RF) != "" and str(inputFreq) == ""):
+                         try:
+                            int(matrixSize)
+                            float(RF)
+                            float(LO)
+                            float(freqStart)
+                            float(freqStop)
+                            MixerSpurTest.changeMixerParameters(matrixSize, 0, LO, RF, freqStart, freqStop)
+                         except:
+                            allInputs = False
+                    else:
+                         allInputs = False
                     
-                    equipmentFound = MixerSpurTest.addEquipment(equipmentList)
-                    configuredTests = MixerSpurTest.configureTest()
-                    
-                    if(isValidMatrixSize == True):
+                    if(allInputs == True):
+                        window['-OUTPUT2-'].update("Currently configuring the mixer spur test")
+                        equipmentFound = MixerSpurTest.addEquipment(equipmentList)
+                        configuredTests = MixerSpurTest.configureTest()
                         if(configuredTests == True and equipmentFound == True):
                             window['-OUTPUT2-'].update("The Mixer Spur Test is ready to run")
                         elif(equipmentFound == False):
@@ -408,13 +436,12 @@ def runGUI():
                         else:
                             window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
                     else:
-                        sg.Popup('Please input the matrix size, input frequency, and local osccilator frequency for the Mixer Spur Test')    
+                        sg.Popup('Make sure mixer spur test inputs are correct!')    
                         
                 else:
                     window['-OUTPUT2-'].update("The Mixer Spur Test is NOT configured correctly")
             elif(values['-R2-'] == True):                
                 if(P1dBTest != None):
-                    window['-OUTPUT2-'].update("Currently configuring the P1dB test")
                     isValidImpedance = True
                     equipmentFound = False
                     configuredTests = False
@@ -437,6 +464,7 @@ def runGUI():
                         isValidImpedance = False                           
 
                     if(isValidImpedance == True):
+                        window['-OUTPUT2-'].update("Currently configuring the P1dB test")
                         equipmentFound = P1dBTest.addEquipment(equipmentList)
                         configuredTests = P1dBTest.configureTest()  
                         if(configuredTests == True and equipmentFound == True):
@@ -868,17 +896,17 @@ def runGUI():
                         theReason = "Failed"
                     
                     if(testStatus == False and theReason == "Failed"):
-                        window['-OUTPUT2-'].update("Check your JSON File. The Mixer Spur Test Test Failed")
+                        window['-OUTPUT2-'].update("Check your JSON File. The Mixer Spur Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
-                        window['-OUTPUT2-'].update("Mixer Spur Test Test ABORTED")
+                        window['-OUTPUT2-'].update("Mixer Spur Test ABORTED")
                         tableOutput.show()
                     else:
-                        window['-OUTPUT2-'].update("Mixer Spur Test Test Completed!")
+                        window['-OUTPUT2-'].update("Mixer Spur Test Completed!")
                         tableOutput.show()
                 else:
-                    window['-OUTPUT2-'].update("Configure the Mixer Spur Test Test Before Running It")
+                    window['-OUTPUT2-'].update("Configure the Mixer Spur Test Before Running It")
             else:
-                window['-OUTPUT2-'].update("Configure the Mixer Spur Test Test Before Running It")
+                window['-OUTPUT2-'].update("Configure the Mixer Spur Test Before Running It")
 
         elif event == 'P1dB':
             testStatus = False
@@ -907,6 +935,7 @@ def runGUI():
         elif event == 'PinvPout':
             testStatus = False
             theReason = ""
+            tableOutput = None
             if(PinVPoutTest != None):
                 if(PinVPoutTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")

@@ -1,5 +1,5 @@
 
-
+"""
 import plotly.graph_objects as go 
  
 headerColor = 'grey' 
@@ -29,7 +29,7 @@ fig = go.Figure(data=[go.Table(
     )) 
 ]) 
  
-fig.show()
+fig.show()"""
 def closest(lst, K):        
     return int(lst.index(lst[min(range(len(lst)), key = lambda i: abs(lst[i]-K))]))
        
