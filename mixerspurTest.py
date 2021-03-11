@@ -156,7 +156,8 @@ class Mixer_Spur_Test(Run_Tests):
                                                     freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
                                                     isFreqError = device.write(freqCommand)
                                                     plotPoints = device.query(fullCommand)
-                                                    frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
+                                                    self.centerFrequency = currentFrequency
+                                                    frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
                                                     if(len(frequency) != 0 and isFreqError == True):
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
@@ -195,7 +196,8 @@ class Mixer_Spur_Test(Run_Tests):
                                                         freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
                                                         isFreqError = device.write(freqCommand)
                                                         plotPoints = device.query(fullCommand)
-                                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, currentFrequency, self.frequencySpan)
+                                                        self.centerFrequency = currentFrequency
+                                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
                                                         if(len(frequency) != 0 and isFreqError == False):
                                                             closestIndex = findClosestIndex(frequency, currentFrequency)
                                                             currentPowerMeasured = powerDB[closestIndex]
