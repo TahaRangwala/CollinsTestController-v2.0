@@ -126,10 +126,10 @@ class Mixer_Spur_Test(Run_Tests):
                 for device in self.devices:
                     if(device.name == equipmentName):
                         fullCommand = str(commandSyntax) + str(commandArgs)
+                        if(title == 'Set Center Frequency'):
+                            continue
                         if(commandType == 'q'):
-                            if(title == 'Set Center Frequency'):
-                                continue
-                            elif(title == 'Get Trace'):
+                            if(title == 'Get Trace'):
                                 if(plt.fignum_exists(figNum) and abortTest == False):
                                     try:
                                         if(firstTime == False):
