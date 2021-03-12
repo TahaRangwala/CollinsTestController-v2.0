@@ -481,7 +481,7 @@ def runGUI():
                         else:
                             window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
                     else:
-                        sg.Popup('Please input the impedance, frequency range, and voltage sweep range for the P1dB test!')    
+                        sg.Popup('Please input the impedance, frequency range and steps, and voltage sweep range and steps for the P1dB test!')    
 
                 else:
                     window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
