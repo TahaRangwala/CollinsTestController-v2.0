@@ -25,15 +25,17 @@ def runGUI():
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
-                    [sg.Text('Number of Harmonics: '), sg.InputText(key = '-INMSize-')],
-                    [sg.Text('Input Frequency (IF): '), sg.InputText(key = '-INMFreq-')],
-                    [sg.Text('Local Oscillator Frequency (LO): '), sg.InputText(key = '-INMLO-')],
+                    [sg.Text('Number of Harmonics: '), sg.InputText(default_text = '3', key = '-INMSize-')],
+                    [sg.Text('Input Frequency (IF): '), sg.InputText(default_text = '0.1', key = '-INMFreq-')],
+                    [sg.Text('Local Oscillator Frequency (LO): '), sg.InputText(default_text = '5', key = '-INMLO-')],
                     [sg.Text('Radio Frequency (RF): '), sg.InputText(key = '-INMRF-')],
-                    [sg.Text('Impedance (Ohm):'), sg.InputText(key = '-INI-')],
-                    [sg.Text('Frequency Range Start:'), sg.InputText(key = '-INFstart-')],
-                    [sg.Text('Frequency Range Stop:'), sg.InputText(key = '-INFstop-')],
-                    [sg.Text('Voltage Sweep Start (Vpp):'), sg.InputText(key = '-INVstart-')],
-                    [sg.Text('Voltage Sweep Stop (Vpp):'), sg.InputText(key = '-INVstop-')],
+                    [sg.Text('Impedance (Ohm):'), sg.InputText(default_text = '3690', key = '-INI-')],
+                    [sg.Text('Frequency Range Start:'), sg.InputText(default_text = '1', key = '-INFstart-')],
+                    [sg.Text('Frequency Range Stop:'), sg.InputText(default_text = '2', key = '-INFstop-')],
+                    [sg.Text('Frequency Range Step:'), sg.InputText(default_text = '0.1', key = '-INFstep-')],
+                    [sg.Text('Voltage Sweep Start (Vpp):'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
+                    [sg.Text('Voltage Sweep Stop (Vpp):'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
+                    [sg.Text('Voltage Sweep Step (Vpp):'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 
@@ -315,7 +317,7 @@ def runGUI():
             [sg.Frame(layout=tempLayout4, title='Plot and Table Settings', element_justification='c')],
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
 
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 875))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 925))
         
     #Loop running while GUI is open
     while True:
@@ -367,6 +369,7 @@ def runGUI():
 
             try:
                 for device in equipmentList:
+                    device.reloadFile()
                     isError = device.connect()
                     if(isError):
                         outputString = outputString + device.name + ": ERROR, NOT CONNECTED\n"
@@ -448,18 +451,22 @@ def runGUI():
                     impedance = values['-INI-']
                     freqStart = values['-INFstart-']
                     freqStop = values['-INFstop-']
+                    freqStep = values['-INFstep-']
                     voltStart = values['-INVstart-']
                     voltStop = values['-INVstop-']
+                    voltStep = values['-INVstep-']
                     
                     try:
                         float(impedance)
                         float(freqStart)
                         float(freqStop)
+                        float(freqStep)
                         float(voltStart)
                         float(voltStop)
+                        float(voltStep)
                         P1dBTest.changeImpedance(impedance)
-                        P1dBTest.setFrequencyRange(freqStart, freqStop)
-                        P1dBTest.setVoltSweepRange(voltStart, voltStop)
+                        P1dBTest.setFrequencyRange(freqStart, freqStop, freqStep)
+                        P1dBTest.setVoltSweepRange(voltStart, voltStop, voltStep)
                     except:
                         isValidImpedance = False                           
 
@@ -911,12 +918,13 @@ def runGUI():
         elif event == 'P1dB':
             testStatus = False
             theReason = ""
+            tableOutput = None
             if(P1dBTest != None):
                 if(P1dBTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The P1dB Test is Starting\nNOTE: Close the plot window to abort the test")
                     
                     try:
-                        testStatus, theReason = P1dBTest.runTest()
+                        testStatus, theReason, tableOutput = P1dBTest.runTest()
                     except Exception as e:
                         testStatus = False
                         theReason = "Failed"
@@ -925,8 +933,10 @@ def runGUI():
                         window['-OUTPUT2-'].update("Check your JSON File. The P1dB Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("P1dB Test ABORTED")
+                        tableOutput.show()
                     else:
                         window['-OUTPUT2-'].update("P1dB Test Completed!")
+                        tableOutput.show()
                 else:
                     window['-OUTPUT2-'].update("Configure the P1dB Test Before Running It")
             else:
@@ -940,17 +950,19 @@ def runGUI():
                 if(PinVPoutTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The Pin vs. Pout Test is Starting\nNOTE: Close the plot window to abort the test")
                     
-                    try:
-                        testStatus, theReason, tableOutput = PinVPoutTest.runTest()
-                    except Exception as e:
-                        testStatus = False
-                        theReason = "Failed"
+                    #try:
+                    testStatus, theReason, tableOutput = PinVPoutTest.runTest()
+                    #except Exception as e:
+                        #testStatus = False
+                        #theReason = "Failed"
                     
                     if(testStatus == False and theReason == "Failed"):
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED")
                         tableOutput.show()
+                    elif(testStatus == False and theReason == "Command Fail"):
+                        window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED Due to SCPI Commands Failing")
                     else:
                         window['-OUTPUT2-'].update("Pin vs. Pout Test Completed!")
                         tableOutput.show()

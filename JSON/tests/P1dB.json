@@ -50,7 +50,7 @@
          },
          "cmd7":{
             "Equipment":"Spectrum Analyzer",
-            "args":"1MHZ",
+            "args":"10MHZ",
             "cmd":":SENS:FREQ:CENT ",
             "title":"Set Center Frequency",
             "type":"w"
@@ -78,7 +78,7 @@
          },
 	 "cmd11":{
 	    "Equipment":"Spectrum Analyzer",
-	    "args":"-10",
+	    "args":"20",
 	    "cmd":":DISP:WIN:TRAC:Y:SCAL:RLEV ",
 	    "title":"Set Power Reference Level",
 	   "type":"w"
@@ -110,18 +110,18 @@
             "title":"Set Frequency",
             "type":"w"
          },
-         "cmd3":{
+	 "cmd3":{
+            "Equipment":"Spectrum Analyzer",
+            "args":"",
+            "cmd":":SENS:FREQ:CENT ",
+            "title":"Set Center Frequency",
+            "type":"w"
+         },	
+         "cmd4":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
             "cmd":":TRACe? TRACE1",
             "title":"Get Trace",
-            "type":"q"
-         },
-         "cmd4":{
-            "Equipment":"Spectrum Analyzer",
-            "args":"",
-            "cmd":":TRACe:MATH:PEAK?",
-            "title":"Get Peak",
             "type":"q"
          }
       }

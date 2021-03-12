@@ -9,11 +9,23 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
     str_data = str_data.split(',')
     data_array = np.array(list(map(float, str_data[1:])))
     
-    start = (int(centerFreq)-0.5*int(freqSpan)) * 10**6
-    stop = (int(centerFreq)+0.5*int(freqSpan)) * 10**6
+    start = (int(centerFreq)-0.5*int(freqSpan))
+    stop = (int(centerFreq)+0.5*int(freqSpan))
     step = (stop-start)/len(data_array)
     x = np.arange(start, stop, step)
     return x, data_array, start, stop
+
+def findClosestIndex(values, val):
+    minPosition = 0
+    minDifference = float('inf')
+    for i in range(len(values)):
+        currentVal = values[i]
+        currentDiff = abs(currentVal - val)
+        if(currentDiff < minDifference):
+            minDifference = currentDiff
+            minPosition = i
+        
+    return minPosition
 
 class PinVPout_Test(Run_Tests):
 
@@ -62,6 +74,7 @@ class PinVPout_Test(Run_Tests):
         powerDB = []
         plt.ion()
         fig, ax = plt.subplots(2,1)
+        fig.subplots_adjust(hspace = .5)
         figNum = fig.number
         plt.show()
         line, = ax[0].plot(frequency, powerDB,'r-')
@@ -72,7 +85,6 @@ class PinVPout_Test(Run_Tests):
         ax[1].set_xlabel("Power In (dBm)")
         ax[1].set_ylabel("Power Out (dBm)")
         ax[1].set_title('Plot of Power In vs Power Out Values')
-        ax[1].legend(loc = "upper right")
         
         #PinPout Settings
         powerInPlot = []
@@ -93,7 +105,7 @@ class PinVPout_Test(Run_Tests):
         previousPeakFreq = 0
         peakFreqCount = 0
         
-        while(abortTest == False and iterationCount <= self.iterationMax):
+        while(abortTest == False and iterationCount < self.iterationMax):
             for i in range(numCommands):
                 currentCommand = commandString + str(i + 1)
                 commandType = self.run[currentCommand]['type']
@@ -120,17 +132,25 @@ class PinVPout_Test(Run_Tests):
                                             previousPeakFreq = currentPeakFreq
                                             
                                             scaleCurrentPeakFreq = 0
+                                            freqScaler = 0
                                             if(self.freqUnits == "GHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000000
+                                                scaleCurrentPeakFreq = float(currentPeakFreq) * 1000000000
+                                                freqScaler = 1000000000
                                             elif(self.freqUnits == "MHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000
+                                                scaleCurrentPeakFreq = float(currentPeakFreq) * 1000000
+                                                freqScaler = 1000000
                                             elif(self.freqUnits == "KHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000
+                                                scaleCurrentPeakFreq = float(currentPeakFreq) * 1000
+                                                freqScaler = 1000
                                             else:
-                                                scaleCurrentPeakFreq = int(currentPeakFreq)
+                                                scaleCurrentPeakFreq = float(currentPeakFreq)
+                                                freqScaler = 1
+                                            
+                                            if(scaleCurrentPeakFreq >= frequency[0] and scaleCurrentPeakFreq <= frequency[len(frequency) - 1]):
+                                                scaleCurrentPeakFreq = self.centerFrequency * freqScaler
                                                 
                                             currentPowerIn = self.powerIn[iterationCount]
-                                            centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
+                                            centerPoint = findClosestIndex(frequency, scaleCurrentPeakFreq)
                                             currentPowerMeasured = powerDB[centerPoint]
                                             currentPowerLoss = self.powerLoss[iterationCount]
                                             previousPowerLoss = currentPowerLoss
@@ -149,30 +169,28 @@ class PinVPout_Test(Run_Tests):
                                             lineLabel = str(currentPeakFreq) + " " + self.freqUnits
                                             powerInPlot.append(currentPowerIn)
                                             peakAmpPlot.append(currentPeakAmplitude)
-                                            pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', label = lineLabel)
+                                            pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-')
+                                            pinpoutLine.set_label(lineLabel)
+                                            ax[1].legend(loc = "upper right")
                                             peakFreqCount = peakFreqCount + 1
                                             
                                         else:
                                             plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                            
                                             line.set_data(frequency, powerDB)
                                             plt.draw()
                                             plt.pause(0.02)
                                             
                                             currentPeakFreq = self.peakFreq[iterationCount]
                                             
-                                            scaleCurrentPeakFreq = 0
-                                            if(self.freqUnits == "GHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000000
-                                            elif(self.freqUnits == "MHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000000
-                                            elif(self.freqUnits == "KHz"):
-                                                scaleCurrentPeakFreq = int(currentPeakFreq) * 1000
-                                            else:
-                                                scaleCurrentPeakFreq = int(currentPeakFreq)
+                                            scaleCurrentPeakFreq = float(currentPeakFreq) * freqScaler
+                                            
+                                            if(scaleCurrentPeakFreq >= frequency[0] and scaleCurrentPeakFreq <= frequency[len(frequency) - 1]):
+                                                scaleCurrentPeakFreq = self.centerFrequency * freqScaler
                                                 
                                             currentPowerIn = self.powerIn[iterationCount]
-                                            centerPoint = int(frequency.index(frequency[min(range(len(frequency)), key = lambda i: abs(frequency[i]-scaleCurrentPeakFreq))]))
+                                            centerPoint = findClosestIndex(frequency, scaleCurrentPeakFreq)
                                             currentPowerMeasured = powerDB[centerPoint]
                                             currentPowerLoss = self.powerLoss[iterationCount]
                                             previousPowerLoss = currentPowerLoss
@@ -195,7 +213,9 @@ class PinVPout_Test(Run_Tests):
                                                 peakAmpPlot = []
                                                 powerInPlot.append(currentPowerIn)
                                                 peakAmpPlot.append(currentPeakAmplitude)
-                                                pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', label = lineLabel)
+                                                pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-')
+                                                pinpoutLine.set_label(lineLabel)
+                                                ax[1].legend(loc = "upper right")
                                                 peakFreqCount = peakFreqCount + 1
                                                 previousPeakFreq = currentPeakFreq
                                             else:
@@ -239,6 +259,8 @@ class PinVPout_Test(Run_Tests):
 
         if(abortTest == True):
             #self.isConfigured = False
+            if(plotPoints == None):
+                return False, "Command Fail", tableOutput
             return False, "Aborted", tableOutput
         
         return True, "Success", tableOutput

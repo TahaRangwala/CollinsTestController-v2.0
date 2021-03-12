@@ -3,15 +3,28 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
-def parseGetTrace(plotPoints, centerFreq, freqSpan):
+def parseGetTrace(plotPoints, centerFreq, freqSpan, freqUnits):
     str_data = str(plotPoints)
+    
+    freqScaler = 0
+    if(freqUnits == "GHz"):
+        freqScaler = 1000000000
+    elif(freqUnits == "MHz"):
+        freqScaler = 1000000
+    elif(freqUnits == "KHz"):
+        freqScaler = 1000
+    else:
+        freqScaler = 1
+        
+    freqSpan = freqSpan * freqScaler
+            
     if(str_data != None):
         str_data = str_data.split(" ", 1)[1]
         str_data = str_data.split(',')
         data_array = np.array(list(map(float, str_data[1:])))
 
-        start = (int(centerFreq)-0.5*int(freqSpan)) * 10**6
-        stop = (int(centerFreq)+0.5*int(freqSpan)) * 10**6
+        start = (int(centerFreq)-0.5*int(freqSpan))
+        stop = (int(centerFreq)+0.5*int(freqSpan))
         step = (stop-start)/len(data_array)
         x = np.arange(start, stop, step)
         return x, data_array, start, stop
@@ -49,6 +62,9 @@ class Mixer_Spur_Test(Run_Tests):
         self.RF = RF
         self.freqStart = freqStart
         self.freqStop = freqStop
+        if self.localOscillator == 0:
+            self.localOscillator = self.RF
+            
         
     def runTest(self):
         numCommands = int(self.run['num'])
@@ -134,7 +150,7 @@ class Mixer_Spur_Test(Run_Tests):
                                     try:
                                         if(firstTime == False):
                                             plotPoints = device.query(fullCommand)
-                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency * freqScaler, self.frequencySpan, self.freqUnits)
                                             ax.set_xlim(start, stop)
                                             line, = ax.plot(frequency, powerDB,'r-')
                                             plt.draw()
@@ -145,23 +161,25 @@ class Mixer_Spur_Test(Run_Tests):
                                             currentCell = []
                                             currentFreq = scaleFreq[iterationCount]
                                             length = len(scaleLocalOscillator)
+                                            print(iterationCount)
                                             for j in range(len(scaleLocalOscillator)):
                                                 currentString = ""
                                                 currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
                                                 if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
                                                     closestIndex = findClosestIndex(frequency, currentFrequency)
                                                     currentPowerMeasured = powerDB[closestIndex]
-                                                    currentString = str(currentPowerMeasured) + "dBm"
+                                                    currentString = str(currentPowerMeasured) + " dBm"
                                                 elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
                                                     freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
                                                     isFreqError = device.write(freqCommand)
                                                     plotPoints = device.query(fullCommand)
                                                     self.centerFrequency = currentFrequency
-                                                    frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
-                                                    if(len(frequency) != 0 and isFreqError == True):
+                                                    frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
+                                                    if(len(frequency) != 0 and isFreqError == False):
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
-                                                        currentString = str(currentPowerMeasured) + "dBm"
+                                                        currentString = str(currentPowerMeasured) + " dBm"
+                                                        ax.set_xlim(start, stop)
                                                         line.set_data(frequency, powerDB)
                                                         plt.draw()
                                                         plt.pause(0.02)
@@ -176,7 +194,7 @@ class Mixer_Spur_Test(Run_Tests):
                                                 
                                         else:
                                             plotPoints = device.query(fullCommand)
-                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                            frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
                                             line.set_data(frequency, powerDB)
                                             plt.draw()
                                             plt.pause(0.02)
@@ -186,22 +204,22 @@ class Mixer_Spur_Test(Run_Tests):
                                             currentFreq = scaleFreq[iterationCount]
                                             if(iterationCount != previousIterationCount):
                                                 for j in range(len(scaleLocalOscillator)):
-                                                    currentString = ""
                                                     currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
                                                     if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
-                                                        currentString = str(currentPowerMeasured) + "dBm"
+                                                        currentString = str(currentPowerMeasured) + " dBm"
                                                     elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
                                                         freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
                                                         isFreqError = device.write(freqCommand)
                                                         plotPoints = device.query(fullCommand)
                                                         self.centerFrequency = currentFrequency
-                                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan)
+                                                        frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
                                                         if(len(frequency) != 0 and isFreqError == False):
                                                             closestIndex = findClosestIndex(frequency, currentFrequency)
                                                             currentPowerMeasured = powerDB[closestIndex]
-                                                            currentString = str(currentPowerMeasured) + "dBm"
+                                                            currentString = str(currentPowerMeasured) + " dBm"
+                                                            ax.set_xlim(start, stop)
                                                             line.set_data(frequency, powerDB)
                                                             plt.draw()
                                                             plt.pause(0.02)
@@ -232,6 +250,7 @@ class Mixer_Spur_Test(Run_Tests):
                 plt.ioff()
                 plt.show()
                 break
+        
         tableOutput = go.Figure(data=[go.Table( 
           header=dict( 
             values=headerLabel, 
@@ -250,7 +269,16 @@ class Mixer_Spur_Test(Run_Tests):
         ]) 
         
         if(abortTest == True):
-            #self.isConfigured = False
+            self.isConfigured = False
             return False, "Aborted", tableOutput
         
+        #Makes sure table has no dummy data
+        tempCellValues = []
+        tempCellValues.append(cellValues[0])
+        
+        for i in range(iterationMax):
+            tempCellValues.append(cellValues[i+1])
+        cellValues = tempCellValues
+        
+        self.isConfigured = False
         return True, "Success", tableOutput

@@ -13,11 +13,23 @@ class Equipment_Connection:
             jsonData = json.load(f)
         self.resourceManager = visa.ResourceManager('@py')
         self.name = name
+        self.fileName = fileName
         self.address = jsonData[name]['address']
         self.timeout = jsonData[name]['timeout']
         self.idn_cmd = jsonData[name]['idn_cmd']
         self.write_termination = jsonData[name]['write_termination']
         self.read_termination = jsonData[name]['read_termination']
+        self.isConnected = False
+    
+    def reloadFile(self):
+        with open(self.fileName) as f:
+            jsonData = json.load(f)
+        self.resourceManager = visa.ResourceManager('@py')
+        self.address = jsonData[self.name]['address']
+        self.timeout = jsonData[self.name]['timeout']
+        self.idn_cmd = jsonData[self.name]['idn_cmd']
+        self.write_termination = jsonData[self.name]['write_termination']
+        self.read_termination = jsonData[self.name]['read_termination']
         self.isConnected = False
     
     def connect(self):

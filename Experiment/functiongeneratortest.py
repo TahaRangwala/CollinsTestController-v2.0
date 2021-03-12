@@ -10,4 +10,3 @@ SA.write_termination = '\n'
 
 #Changes dBm reference level
 print(SA.query(":TRACe? TRACE1"))
-print(SA.query(":TRACe:MATH:PEAK?"))

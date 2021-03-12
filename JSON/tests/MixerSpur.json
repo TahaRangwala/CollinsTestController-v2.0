@@ -89,7 +89,7 @@
              },
              "cmd13":{
                 "Equipment":"Spectrum Analyzer",
-                "args":"5MHZ",
+                "args":"10MHZ",
                 "cmd":":SENS:FREQ:CENT ",
                 "title":"Set Center Frequency",
                 "type":"w"
