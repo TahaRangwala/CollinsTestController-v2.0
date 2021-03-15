@@ -256,7 +256,7 @@ class P1dB_Test(Run_Tests):
             values=[frequencyOutput, dBCompressionPoint], 
             line_color='darkslategray',
             fill_color='lightcyan', 
-            align = ['left', 'center'], 
+            align = ['centers', 'center'], 
             font = dict(color = 'darkslategray', size = 11) 
             )) 
         ]) 

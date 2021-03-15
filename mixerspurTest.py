@@ -256,14 +256,14 @@ class Mixer_Spur_Test(Run_Tests):
             values=headerLabel, 
             line_color='darkslategray',
             fill_color='lightskyblue', 
-            align=['left','center'], 
+            align=['center','center'], 
             font=dict(color='white', size=12) 
           ), 
           cells=dict( 
             values=cellValues, 
             line_color='darkslategray',
             fill_color='lightcyan', 
-            align = ['left', 'center'], 
+            align = ['center', 'center'], 
             font = dict(color = 'darkslategray', size = 11) 
             )) 
         ]) 

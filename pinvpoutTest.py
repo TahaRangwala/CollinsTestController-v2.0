@@ -242,7 +242,7 @@ class PinVPout_Test(Run_Tests):
                 break
         
         tableOutput = go.Figure(data=[go.Table(
-            header=dict(values=['Peak Frequency (MHz)', 'Power In (dBm)', 'Power Measured (dBm)', 'Power Loss', 'Peak Amplitude (dBm)' , 'Pin-Pout'],
+            header=dict(values=['Peak Frequency (' + str(self.freqUnits) + ')', 'Power In (dBm)', 'Power Measured (dBm)', 'Power Loss', 'Peak Amplitude (dBm)' , 'Pin-Pout'],
                         line_color='darkslategray',
                         fill_color='lightskyblue',
                         align='left'),
