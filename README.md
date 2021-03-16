@@ -1,2 +1,2 @@
 # CollinsTestController-v2.0
-- Currently under development. We are making progress and are projected to finish by April 2021
+- We have completed the test controller. Currently, we are commenting code and writing the user manual
