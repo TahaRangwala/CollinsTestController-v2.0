@@ -1,6 +1,5 @@
-"""File Description: This .py file is the file the contains the Equipment_Connection class. This class is in charge of connecting and reconnecting to testing equipment,
-   running write and query commands, and anything else that would involve directly communicating with testing equipment
-"""
+#File Description: This .py file is the file the contains the Equipment_Connection class. This class is in charge of connecting and reconnecting to testing equipment,
+#running write and query commands, and anything else that would involve directly communicating with testing equipment
 
 #Required imports
 import pyvisa as visa#pyvisa library used to connect to testing equipment and run write and query commands using the SCPI command syntax
@@ -15,7 +14,8 @@ class Equipment_Connection:
     #Constructor for this class
     def __init__(self, name, fileName):
         
-        #This code will load the equipment json file the user has entered, which must be in the JSON/equipment folder. This file location can be changed here
+        #This code will load the equipment json file the user has entered or previously loaded in the allEquipment.txt (described more in gui.py file)
+        #file, and the json file must be in the JSON/equipment folder. This file location can be changed here
         #if the user wants to change locations of the equipment json files
         fileName = 'JSON/equipment/' + fileName
         with open(fileName) as f:
