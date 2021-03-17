@@ -250,7 +250,14 @@ class PinVPout_Test(Run_Tests):
                                                 peakAmpPlot = []
                                                 powerInPlot.append(currentPowerIn)
                                                 peakAmpPlot.append(currentPeakAmplitude)
-                                                pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-')
+                                                
+                                                #Generating random color for the line
+                                                r = random.random()
+                                                b = random.random()
+                                                g = random.random()
+                                                color = (r, g, b)
+                                                
+                                                pinpoutLine, = ax[1].plot(powerInPlot, peakAmpPlot,'r-', c = color)
                                                 pinpoutLine.set_label(lineLabel)
                                                 ax[1].legend(loc = "upper right")
                                                 peakFreqCount = peakFreqCount + 1
