@@ -1,36 +1,30 @@
-from tests import Run_Tests
-import matplotlib.pyplot as plt
-import numpy as np
-import plotly.graph_objects as go
+#File Description: This .py file contains the Mixer_Spur_Test class. This class inherits from the Run_Tests class in the test.py file, and it
+#has its own unique run function, which contains the algorithm that produces the spectrum analyzer trace and the harmonics table output
 
-def parseGetTrace(plotPoints, centerFreq, freqSpan, freqUnits):
-    str_data = str(plotPoints)
+#Required imports
+from tests import Run_Tests#Importing the Run_Tests class from tests.py
+import matplotlib.pyplot as plt#used for plotting graphs
+import numpy as np#array calculations
+import plotly.graph_objects as go#used for making tables
+
+#This function returns a list of x values, an array of y values, and an x axis start and stop position based off a
+#set of points passed in, a center frequency, and a frequency span as well
+def parseGetTrace(plotPoints, centerFreq, freqSpan):
     
-    freqScaler = 0
-    if(freqUnits == "GHz"):
-        freqScaler = 1000000000
-    elif(freqUnits == "MHz"):
-        freqScaler = 1000000
-    elif(freqUnits == "KHz"):
-        freqScaler = 1000
-    else:
-        freqScaler = 1
-        
-    freqSpan = freqSpan * freqScaler
-            
-    if(str_data != None):
-        str_data = str_data.split(" ", 1)[1]
-        str_data = str_data.split(',')
-        data_array = np.array(list(map(float, str_data[1:])))
+    #Formatting the data array
+    str_data = str(plotPoints)
+    str_data = str_data.split(" ", 1)[1]
+    str_data = str_data.split(',')
+    data_array = np.array(list(map(float, str_data[1:])))
+    
+    #Calculating the start, stop, and x values that will be returned
+    start = (int(centerFreq)-0.5*int(freqSpan))
+    stop = (int(centerFreq)+0.5*int(freqSpan))
+    step = (stop-start)/len(data_array)
+    x = np.arange(start, stop, step)
+    return x, data_array, start, stop
 
-        start = (int(centerFreq)-0.5*int(freqSpan))
-        stop = (int(centerFreq)+0.5*int(freqSpan))
-        step = (stop-start)/len(data_array)
-        x = np.arange(start, stop, step)
-        return x, data_array, start, stop
-    else:
-        return [], [], 0, 0
-
+#This function finds the index that contains the closest value to the val variable in the list of values passed in
 def findClosestIndex(values, val):
     minPosition = 0
     minDifference = float('inf')
@@ -43,18 +37,23 @@ def findClosestIndex(values, val):
         
     return minPosition
 
+#Mixer_Spur_Test class declaration
 class Mixer_Spur_Test(Run_Tests):
 
+    #Constructor
     def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
         Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
-        self.matrixSize = 5
-        self.inputFrequency = 0.0
-        self.localOscillator = 0.0
-        self.RF = 0.0
-        self.freqStart = 0.0
-        self.freqStop = 0.0
-        self.setCenterFreqCommand = None
         
+        #Default values for instance variables
+        self.matrixSize = 5#matrix size
+        self.inputFrequency = 0.0#input frequency
+        self.localOscillator = 0.0#local oscillator frequency
+        self.RF = 0.0#Radio frequency
+        self.freqStart = 0.0#frequency start
+        self.freqStop = 0.0#frequency stop
+        self.setCenterFreqCommand = None#commmand associated with set center frequency
+    
+    #This function changes the values of the instance variables
     def changeMixerParameters(self, matrixSize, inputFreq, localOscillate, RF, freqStart, freqStop):
         self.matrixSize = int(matrixSize)
         self.inputFrequency = inputFreq
@@ -65,22 +64,26 @@ class Mixer_Spur_Test(Run_Tests):
         if self.localOscillator == 0:
             self.localOscillator = self.RF
             
-        
+    #This function runs the commands associated with the run section in the test json file. This function has been customized specifically
+    #for the Mixer Spur test. Pay close attention to how the commands are specifically used for this tests. This is also described in the
+    #user manual
     def runTest(self):
         numCommands = int(self.run['num'])
         foundAllCommands = False
         
+        #Getting the command associated with the set center frequency and assigning it to an instance variable
         commandString = 'cmd'
         for i in range(numCommands):
             currentCommand = commandString + str(i + 1)
             title = self.run[currentCommand]['title']
             if(title == 'Set Center Frequency'):
                 self.setCenterFreqCommand = self.run[currentCommand]
-                   
-        if(self.equipmentConnected == False or numCommands <= 0 or self.setCenterFreqCommand == None):
-            return False
         
-        #Plot settings for trace
+        #Making sure everything is set up
+        if(self.equipmentConnected == False or numCommands <= 0 or self.setCenterFreqCommand == None):
+            return False, "Failed", None
+        
+        #Plot settings for spectrum analyzer trace
         abortTest = False
         frequency = []
         powerDB = []
@@ -93,7 +96,7 @@ class Mixer_Spur_Test(Run_Tests):
         ax.set_ylabel(self.yLabel)
         ax.set_title(self.graphTitle)
         
-        #Table Settings
+        #Table Settings for harmonics table output
         tableOutput = None
         headerLabel = [" "]
         cellLabel = []
@@ -102,6 +105,7 @@ class Mixer_Spur_Test(Run_Tests):
         scaleFreq = []
         cellValues = []
         
+        #Freqeuncy scaler based off frequency units
         freqScaler = 0
         if(self.freqUnits == "GHz"):
             freqScaler = 1000000000
@@ -112,9 +116,12 @@ class Mixer_Spur_Test(Run_Tests):
         else:
             freqScaler = 1
         
+        #scaling the frequency start and stop
         self.freqStart = float(self.freqStart) * freqScaler
         self.freqStop = float(self.freqStop) * freqScaler
         
+        #Setting up the table arrays used for the harmonics table output and the different frequencies the
+        #user has inputted in the GUI
         for i in range(self.matrixSize + 1):
             scaleLocalOscillator.append(i * float(self.localOscillator) * freqScaler)
             scaleRF.append(i * float(self.RF) * freqScaler)
@@ -124,15 +131,20 @@ class Mixer_Spur_Test(Run_Tests):
             headerString = "<b>" + str(i) + "x" + str(self.inputFrequency) + self.freqUnits + "</b>"
             headerLabel.append(headerString)
         
+        #Adding a cell value for the table label on the first column for the harmonics table
         cellValues.append(cellLabel)
 
+        #Variables used for iteration
         iterationCount = 0
-        iterationMax = self.matrixSize + 1
+        iterationMax = self.matrixSize + 1#based off the matrix size the user inputted
         previousIterationCount = 0
         commandString = 'cmd'
         firstTime = False
+        
+        #looping through all the commands based on the iteration count or if the test has been aborted
         while(abortTest == False and iterationCount < iterationMax):
             for i in range(numCommands):
+                #Getting information from the current command
                 currentCommand = commandString + str(i + 1)
                 commandType = self.run[currentCommand]['type']
                 commandSyntax = self.run[currentCommand]['cmd']
@@ -145,10 +157,11 @@ class Mixer_Spur_Test(Run_Tests):
                         if(title == 'Set Center Frequency'):
                             continue
                         if(commandType == 'q'):
-                            if(title == 'Get Trace'):
+                            if(title == 'Get Trace'):#unique for the get trace command
                                 if(plt.fignum_exists(figNum) and abortTest == False):
                                     try:
                                         if(firstTime == False):
+                                            #Setting up the plot initially and gathering the initial data from the spectrum analyzer
                                             plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency * freqScaler, self.frequencySpan, self.freqUnits)
                                             ax.set_xlim(start, stop)
@@ -162,20 +175,25 @@ class Mixer_Spur_Test(Run_Tests):
                                             currentFreq = scaleFreq[iterationCount]
                                             length = len(scaleLocalOscillator)
                                             print(iterationCount)
-                                            for j in range(len(scaleLocalOscillator)):
+                                            for j in range(len(scaleLocalOscillator)):#looping through the local oscillator frequencies
                                                 currentString = ""
                                                 currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
-                                                if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
-                                                    closestIndex = findClosestIndex(frequency, currentFrequency)
-                                                    currentPowerMeasured = powerDB[closestIndex]
+                                                if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):#making sure the frequency is in range
+                                                    closestIndex = findClosestIndex(frequency, currentFrequency)#returns the index of the closest value in the frequency array
+                                                    currentPowerMeasured = powerDB[closestIndex]#gets the power associated with the frequency
                                                     currentString = str(currentPowerMeasured) + " dBm"
-                                                elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
+                                                elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):#checking if frequency is in entire range
                                                     freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
                                                     isFreqError = device.write(freqCommand)
+                                                    
+                                                    #Changes the center frequency so we can read the correct value
                                                     plotPoints = device.query(fullCommand)
                                                     self.centerFrequency = currentFrequency
+                                                    
+                                                    #Reads the data from the spectrum analyzer
                                                     frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
-                                                    if(len(frequency) != 0 and isFreqError == False):
+                                                    if(len(frequency) != 0 and isFreqError == False):#checking if there is an error
+                                                        #Doing same stuff as above with getting the current power and then updating the plot and table arrays
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
                                                         currentString = str(currentPowerMeasured) + " dBm"
@@ -183,9 +201,9 @@ class Mixer_Spur_Test(Run_Tests):
                                                         line.set_data(frequency, powerDB)
                                                         plt.draw()
                                                         plt.pause(0.02)
-                                                    else:
+                                                    else:#error occurred
                                                         currentString = "ERROR"
-                                                else:
+                                                else:#frequency is not in the range
                                                     currentString = "Out of Range"
                                                 
                                                 currentCell.append(currentString)
@@ -193,13 +211,15 @@ class Mixer_Spur_Test(Run_Tests):
                                             cellValues.append(currentCell)
                                                 
                                         else:
+                                            #updating the spectrum analyzer trace
                                             plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
+                                            ax.set_xlim(start, stop)
                                             line.set_data(frequency, powerDB)
                                             plt.draw()
                                             plt.pause(0.02)
                                             
-                                            #Update Spur Table
+                                            #Update Spur Table (same as previous loop)
                                             currentCell = []
                                             currentFreq = scaleFreq[iterationCount]
                                             if(iterationCount != previousIterationCount):
@@ -233,7 +253,7 @@ class Mixer_Spur_Test(Run_Tests):
                                                 cellValues.append(currentCell)
                                             else:
                                                 continue
-                                    except:
+                                    except:#if the test is aborted
                                         abortTest = True
                                         break
                                 else:
@@ -243,6 +263,8 @@ class Mixer_Spur_Test(Run_Tests):
                         else:
                             if(device.write(fullCommand) == True):
                                 return False, "Failed", tableOutput
+                            
+            #updating the iteration count and making sure the plot has not been closed
             previousIterationCount = iterationCount
             iterationCount = iterationCount + 1
             if(not plt.fignum_exists(figNum)):
@@ -251,6 +273,7 @@ class Mixer_Spur_Test(Run_Tests):
                 plt.show()
                 break
         
+        #Setting up the table output
         tableOutput = go.Figure(data=[go.Table( 
           header=dict( 
             values=headerLabel, 
@@ -268,6 +291,7 @@ class Mixer_Spur_Test(Run_Tests):
             )) 
         ]) 
         
+        #if the test was aborted
         if(abortTest == True):
             self.isConfigured = False
             return False, "Aborted", tableOutput
@@ -275,7 +299,6 @@ class Mixer_Spur_Test(Run_Tests):
         #Makes sure table has no dummy data
         tempCellValues = []
         tempCellValues.append(cellValues[0])
-        
         for i in range(iterationMax):
             tempCellValues.append(cellValues[i+1])
         cellValues = tempCellValues
