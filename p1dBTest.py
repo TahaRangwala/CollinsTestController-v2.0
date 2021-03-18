@@ -270,7 +270,7 @@ class P1dB_Test(Run_Tests):
                 plt.show()
                 break
         
-        #Setting up the table output
+        #Setting up the table output for the 1dB Compression point table
         tableOutput = go.Figure(data=[go.Table( 
           header=dict( 
             values=headerLabel, 
