@@ -36,9 +36,9 @@ def runGUI():
                     [sg.Text('Frequency Range Start:'), sg.InputText(default_text = '1', key = '-INFstart-')],
                     [sg.Text('Frequency Range Stop:'), sg.InputText(default_text = '2', key = '-INFstop-')],
                     [sg.Text('Frequency Range Step:'), sg.InputText(default_text = '0.1', key = '-INFstep-')],
-                    [sg.Text('Voltage Sweep Start (Vpp):'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
-                    [sg.Text('Voltage Sweep Stop (Vpp):'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
-                    [sg.Text('Voltage Sweep Step (Vpp):'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
+                    [sg.Text('Voltage Sweep Start (dBm):'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
+                    [sg.Text('Voltage Sweep Stop (dBm):'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
+                    [sg.Text('Voltage Sweep Step (dBm):'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 
@@ -50,6 +50,7 @@ def runGUI():
                 [sg.Text('X-Label'), sg.InputText(default_text = 'Frequency (MHz)',key='-IN6-')],
                 [sg.Text('Y-Label'), sg.InputText(default_text = 'Power (dBm)', key='-IN7-')],
                 [sg.Text('Frequency Units:'), sg.Radio('Hz', 'RADIO2', default=True, key = '-R5-'), sg.Radio('KHz', 'RADIO2', key = '-R6-'), sg.Radio('MHz', 'RADIO2', key = '-R7-', default=True), sg.Radio('GHz', 'RADIO2', key = '-R8-')],
+                [sg.Text('Power Units:'), sg.Radio('dBm', 'RADIO3', default=True, key = '-R9-'), sg.Radio('Vpp', 'RADIO3', key = '-R10-')],
                 [sg.Button('Apply Plot and Table Changes')]]
 
     
@@ -106,7 +107,7 @@ def runGUI():
                 if(testType == 'MixerSpurTest'):#adding the mixer spur test
                     if(MixerSpurTest == None):
                         commandNames = []
-                        MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel, "MHz")
+                        MixerSpurTest = Mixer_Spur_Test(testName, fileName, title, xLabel, yLabel, "MHz", "dBm")
                         configNum, runNum, resetNum = MixerSpurTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = MixerSpurTest.getTitlesList()
                         configArgs, runArgs, resetArgs = MixerSpurTest.getArgsList()
@@ -156,7 +157,7 @@ def runGUI():
                 elif(testType == 'P1dBTest'):#adding the P1dB Test
                     if(P1dBTest == None):
                         commandNames = []
-                        P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel, "MHz")
+                        P1dBTest = P1dB_Test(testName, fileName, title, xLabel, yLabel, "MHz", "dBm")
                         configNum, runNum, resetNum = P1dBTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = P1dBTest.getTitlesList()
                         configArgs, runArgs, resetArgs = P1dBTest.getArgsList()
@@ -206,7 +207,7 @@ def runGUI():
                 elif(testType == 'PinvPoutTest'):#adding the PinVPout test
                     if(PinVPoutTest == None):
                         commandNames = []
-                        PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel, "MHz")
+                        PinVPoutTest = PinVPout_Test(testName, fileName, title, xLabel, yLabel, "MHz", "dBm")
                         configNum, runNum, resetNum = PinVPoutTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = PinVPoutTest.getTitlesList()
                         configArgs, runArgs, resetArgs = PinVPoutTest.getArgsList()
@@ -256,7 +257,7 @@ def runGUI():
                 else:
                     if(OtherTest == None):#Adding the other test
                         commandNames = []
-                        OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel, "MHz")
+                        OtherTest = Other_Test(testName, fileName, title, xLabel, yLabel, "MHz", "dBm")
                         configNum, runNum, resetNum = OtherTest.getNumberOfCommands()
                         configTitles, runTitles, resetTitles = OtherTest.getTitlesList()
                         configArgs, runArgs, resetArgs = OtherTest.getArgsList()
@@ -1033,6 +1034,10 @@ def runGUI():
                 freqUnits = "KHz"
             if(values['-R8-'] == True):
                 freqUnits = "GHz"
+
+            powUnits = "dBm"
+            if(values['-R10-'] == True):
+                powUnits = "Vpp"
                     
             if(title != "" and xLabel != "" and yLabel != ""):
                 readyToChange = True

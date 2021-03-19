@@ -5,7 +5,7 @@
          "Spectrum Analyzer"
       ],
       "config":{
-         "num":11,
+         "num":12,
          "cmd1":{
             "Equipment":"Function Generator",
             "args":"OFF",
@@ -15,77 +15,84 @@
          },
          "cmd2":{
             "Equipment":"Function Generator",
+            "args":"DBM",
+            "cmd":":VOLT:UNIT ",
+            "title":"Set Volts Unit",
+            "type":"w"
+         },
+         "cmd3":{
+            "Equipment":"Function Generator",
             "args":"1",
             "cmd":":VOLT ",
             "title":"Set Volts",
             "type":"w"
          },
-         "cmd3":{
+         "cmd4":{
             "Equipment":"Function Generator",
             "args":"0",
             "cmd":":VOLT:OFFSet ",
             "title":"Set Voltage Offset",
             "type":"w"
          },
-         "cmd4":{
+         "cmd5":{
             "Equipment":"Function Generator",
             "args":"200000",
             "cmd":":FREQ ",
             "title":"Set Frequency",
             "type":"w"
          },
-         "cmd5":{
+         "cmd6":{
             "Equipment":"Function Generator",
             "args":"1",
             "cmd":":PHASe ",
             "title":"Set Phase",
             "type":"w"
          },
-         "cmd6":{
+         "cmd7":{
             "Equipment":"Function Generator",
             "args":"ON",
             "cmd":":OUTPUT ",
             "title":"Enable Output",
             "type":"w"
          },
-         "cmd7":{
+         "cmd8":{
             "Equipment":"Spectrum Analyzer",
             "args":"10MHZ",
             "cmd":":SENS:FREQ:CENT ",
             "title":"Set Center Frequency",
             "type":"w"
          },
-         "cmd8":{
+         "cmd9":{
             "Equipment":"Spectrum Analyzer",
             "args":"2MHZ",
             "cmd":":SENS:FREQ:SPAN ",
             "title":"Set Frequency Span",
             "type":"w"
          },
-         "cmd9":{
+         "cmd10":{
             "Equipment":"Spectrum Analyzer",
             "args":"ON",
             "cmd":":TRACe:MATH:PEAK:TABLe:STATe ",
             "title":"Enable Peak Table State",
             "type":"w"
          },
-	 "cmd10":{
+         "cmd11":{
             "Equipment":"Spectrum Analyzer",
             "args":"AMPL",
             "cmd":":TRACe:MATH:PEAK:SORT ",
             "title":"Set Peak Sort Ampl",
             "type":"w"
          },
-	 "cmd11":{
-	    "Equipment":"Spectrum Analyzer",
-	    "args":"20",
-	    "cmd":":DISP:WIN:TRAC:Y:SCAL:RLEV ",
-	    "title":"Set Power Reference Level",
-	   "type":"w"
-         }
+         "cmd12":{
+            "Equipment":"Spectrum Analyzer",
+            "args":"20",
+            "cmd":":DISP:WIN:TRAC:Y:SCAL:RLEV ",
+            "title":"Set Power Reference Level",
+            "type":"w"
+               }
       },
       "reset":{
-	"num":1,
+         "num":1,
          "cmd1":{
             "Equipment":"Function Generator",
             "args":"",

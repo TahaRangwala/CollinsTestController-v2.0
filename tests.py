@@ -13,7 +13,7 @@ class Run_Tests:
     """
     
     #Constructor for this class
-    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits):
         
         #This code will load the test json file the user has setup in the allTests.txt file (described more in gui.py)
         #, which must be in the JSON/test folder. This file location can be changed here
@@ -39,6 +39,7 @@ class Run_Tests:
         self.centerFrequency = 150#initial center frequency
         self.frequencySpan = 100#initial frequency span
         self.freqUnits = freqUnits#frequency units
+        self.powUnits = powUnits#power units
     
     #This function modifies command parameters based off the command number and location
     def changeCommandParameter(self, commandNum, location, newParam):

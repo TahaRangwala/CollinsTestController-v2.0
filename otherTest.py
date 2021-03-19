@@ -24,8 +24,8 @@ def parseGetTrace(plotPoints, centerFreq, freqSpan):
 class Other_Test(Run_Tests):
     
     #Constructor for Other_Test
-    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits) 
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits) 
     
     #Modifiable run test function that is unique for this child class.
     def runTest(self):

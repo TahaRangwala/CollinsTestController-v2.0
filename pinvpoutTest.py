@@ -43,9 +43,9 @@ def findClosestIndex(values, val):
 class PinVPout_Test(Run_Tests):
     
     #Constructor for this class
-    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits):
         #Passing in variables to the super class or parent class
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits)
         
         #Instance variables unique to the PinVPout_Test class
         self.outputTable = None#output table

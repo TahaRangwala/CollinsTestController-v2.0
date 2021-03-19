@@ -55,8 +55,8 @@ def findClosestIndex(values, val):
 class P1dB_Test(Run_Tests):
 
     #Constructor
-    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits)
         self.impedance = 0#impedance
         self.inputPower = 0#input power
         self.smallVoltGain = 0#small voltage gain
@@ -227,9 +227,15 @@ class P1dB_Test(Run_Tests):
                                                     plt.pause(0.02)
                                                     
                                                     #Calculating associated with the P1dB Test
-                                                    RMS = float(float(voltCount) / (2 * math.sqrt(2)))
-                                                    inputPower = float(math.pow(RMS, 2) / float(self.impedance))
-                                                    inputPower = 10 * math.log10(1000 * inputPower)
+                                                    RMS = None
+                                                    inputPower = None
+                                                    if(self.powUnits == "Vpp"):
+                                                        RMS = float(float(voltCount) / (2 * math.sqrt(2)))
+                                                        inputPower = float(math.pow(RMS, 2) / float(self.impedance))
+                                                        inputPower = 10 * math.log10(1000 * inputPower)
+                                                    else:
+                                                        inputPower = voltCount
+
                                                     closestIndex = findClosestIndex(frequency, freqCount * freqScaler)
                                                     outputPower = powerDB[closestIndex]
                                                     powerDiff = inputPower - outputPower

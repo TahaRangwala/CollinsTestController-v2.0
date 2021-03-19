@@ -54,8 +54,8 @@ def findClosestIndex(values, val):
 class Mixer_Spur_Test(Run_Tests):
 
     #Constructor
-    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits):
-        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits)
+    def __init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits):
+        Run_Tests.__init__(self, name, fileName, title, xlabel, ylabel, freqUnits, powUnits)
         
         #Default values for instance variables
         self.matrixSize = 5#matrix size
