@@ -95,8 +95,8 @@
          }
       },
       "run":{
-	 "num":4,
-	 "cmd1":{
+	      "num":4,
+	      "cmd1":{
             "Equipment":"Function Generator",
             "args":"",
             "cmd":":VOLT ",
@@ -110,7 +110,7 @@
             "title":"Set Frequency",
             "type":"w"
          },
-	 "cmd3":{
+	      "cmd3":{
             "Equipment":"Spectrum Analyzer",
             "args":"",
             "cmd":":SENS:FREQ:CENT ",

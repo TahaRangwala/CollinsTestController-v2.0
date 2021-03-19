@@ -10,14 +10,27 @@ import math#used for some calculations
 
 #This function returns a list of x values, an array of y values, and an x axis start and stop position based off a
 #set of points passed in, a center frequency, and a frequency span as well
-def parseGetTrace(plotPoints, centerFreq, freqSpan):
+def parseGetTrace(plotPoints, centerFreq, freqSpan, freqUnits):
     
     #Formatting the data array
     str_data = str(plotPoints)
     str_data = str_data.split(" ", 1)[1]
     str_data = str_data.split(',')
     data_array = np.array(list(map(float, str_data[1:])))
-    
+
+    #Scaling the frequency span
+    freqScaler = 0
+    if(freqUnits == "GHz"):
+        freqScaler = 1000000000
+    elif(freqUnits == "MHz"):
+        freqScaler = 1000000
+    elif(freqUnits == "KHz"):
+        freqScaler = 1000
+    else:
+        freqScaler = 1
+
+    freqSpan = freqSpan * freqScaler
+
     #Calculating the start, stop, and x values that will be returned
     start = (int(centerFreq)-0.5*int(freqSpan))
     stop = (int(centerFreq)+0.5*int(freqSpan))
@@ -128,7 +141,7 @@ class P1dB_Test(Run_Tests):
             freqScaler = 1000
         else:
             freqScaler = 1
-            
+        
         #Table Setup for the 1dB Compression Point table
         frequencyOutput = []
         dBCompressionPoint = []
@@ -159,13 +172,13 @@ class P1dB_Test(Run_Tests):
                         fullCommand = str(commandSyntax) + str(commandArgs)
                         if(title == 'Set Center Frequency'):
                             continue
-                        if(title == 'Set Volts'):#Gets the device associated with the set volts command
+                        elif(title == 'Set Volts'):#Gets the device associated with the set volts command
                             self.voltDevice = device
                             continue
-                        if(title == 'Set Frequency'):#Gets the device associated with the set frequency command
+                        elif(title == 'Set Frequency'):#Gets the device associated with the set frequency command
                             self.freqDevice = device
                             continue
-                        if(commandType == 'q'):
+                        elif(commandType == 'q'):
                             if(title == 'Get Trace'):#Takes information when the Get Trace command gets data
                                 if(plt.fignum_exists(figNum) and abortTest == False):
                                     try:
@@ -258,7 +271,7 @@ class P1dB_Test(Run_Tests):
                             else:#runs query command if nothing else has been caught by the if statement
                                 device.query(fullCommand)
                         else:#runs write commands
-                            if(device.write(fullCommand) == True):
+                            if(device.write(fullCommand) == True):#Does nothing here cause write commands do not matter
                                 return False, "Failed", tableOutput
             
             #updating the iteration count and checking if the plot window has been closed
@@ -270,6 +283,7 @@ class P1dB_Test(Run_Tests):
                 plt.show()
                 break
         
+        print("TESTING")
         #Setting up the table output for the 1dB Compression point table
         tableOutput = go.Figure(data=[go.Table( 
           header=dict( 
@@ -283,7 +297,7 @@ class P1dB_Test(Run_Tests):
             values=[frequencyOutput, dBCompressionPoint], 
             line_color='darkslategray',
             fill_color='lightcyan', 
-            align = ['centers', 'center'], 
+            align = ['center', 'center'], 
             font = dict(color = 'darkslategray', size = 11) 
             )) 
         ]) 

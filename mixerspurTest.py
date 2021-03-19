@@ -9,14 +9,27 @@ import plotly.graph_objects as go#used for making tables
 
 #This function returns a list of x values, an array of y values, and an x axis start and stop position based off a
 #set of points passed in, a center frequency, and a frequency span as well
-def parseGetTrace(plotPoints, centerFreq, freqSpan):
+def parseGetTrace(plotPoints, centerFreq, freqSpan, freqUnits):
     
     #Formatting the data array
     str_data = str(plotPoints)
     str_data = str_data.split(" ", 1)[1]
     str_data = str_data.split(',')
     data_array = np.array(list(map(float, str_data[1:])))
-    
+
+    #Scaling the frequency span
+    freqScaler = 0
+    if(freqUnits == "GHz"):
+        freqScaler = 1000000000
+    elif(freqUnits == "MHz"):
+        freqScaler = 1000000
+    elif(freqUnits == "KHz"):
+        freqScaler = 1000
+    else:
+        freqScaler = 1
+
+    freqSpan = freqSpan * freqScaler
+
     #Calculating the start, stop, and x values that will be returned
     start = (int(centerFreq)-0.5*int(freqSpan))
     stop = (int(centerFreq)+0.5*int(freqSpan))

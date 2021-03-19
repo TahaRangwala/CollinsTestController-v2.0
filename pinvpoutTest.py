@@ -157,11 +157,10 @@ class PinVPout_Test(Run_Tests):
                                             plt.draw()#drawing the line
                                             plt.pause(0.02)#pausing plot to update it
                                             firstTime = True#no longer the first iteration
-                                            
                                             #getting the current peak frequency and assigning values
                                             currentPeakFreq = int(self.peakFreq[iterationCount])
                                             previousPeakFreq = currentPeakFreq
-                                            
+
                                             #Scaling the current peak frequency based off the frequency units
                                             scaleCurrentPeakFreq = 0
                                             freqScaler = 0
@@ -197,7 +196,7 @@ class PinVPout_Test(Run_Tests):
                                             powerInOutput.append(round(currentPowerIn, 3))
                                             powerMeasuredOutput.append(round(currentPowerMeasured, 3))
                                             powerLossOutput.append(round(currentPowerLoss, 3))
-                                            peakAmplitudeOutput.append(round(currentPeakAmplitud, 3))
+                                            peakAmplitudeOutput.append(round(currentPeakAmplitude, 3))
                                             pinpoutOutput.append(round(currentPinPout, 3))
                                             
                                             #Power In vs Power Loss Graph Setup
@@ -240,7 +239,7 @@ class PinVPout_Test(Run_Tests):
                                             powerInOutput.append(round(currentPowerIn, 3))
                                             powerMeasuredOutput.append(round(currentPowerMeasured, 3))
                                             powerLossOutput.append(round(currentPowerLoss, 3))
-                                            peakAmplitudeOutput.append(round(currentPeakAmplitud, 3))
+                                            peakAmplitudeOutput.append(round(currentPeakAmplitude, 3))
                                             pinpoutOutput.append(round(currentPinPout, 3))
                                             
                                             #Updating Power In vs Power Out Plot

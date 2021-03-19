@@ -918,7 +918,7 @@ def runGUI():
                         window['-OUTPUT2-'].update("Check your JSON File. The Mixer Spur Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("Mixer Spur Test ABORTED")
-                        tableOutput.show()#outputs the table
+                        #tableOutput.show()#outputs the table
                     else:
                         window['-OUTPUT2-'].update("Mixer Spur Test Completed!")
                         tableOutput.show()#outputs the table
@@ -972,7 +972,7 @@ def runGUI():
                         window['-OUTPUT2-'].update("Check your JSON File. The Pin Vs. Pout Test Failed")
                     elif(testStatus == False and theReason == "Aborted"):
                         window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED")
-                        tableOutput.show()#outputs the table
+                        #tableOutput.show()#outputs the table
                     elif(testStatus == False and theReason == "Command Fail"):
                         window['-OUTPUT2-'].update("Pin vs. Pout Test ABORTED Due to SCPI Commands Failing")
                     else:
