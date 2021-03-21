@@ -330,7 +330,7 @@ def runGUI():
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
     
     #Setting up the size of the window, its title, layout, and element justification
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 925))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 950))
         
     #Loop running while GUI is open
     while True:
