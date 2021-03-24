@@ -4,6 +4,7 @@
 #Required imports
 import pyvisa as visa#pyvisa library used to connect to testing equipment and run write and query commands using the SCPI command syntax
 import json#used for managing the json files for equipment connections
+import time#used for delaying commands
 
 #The Equipment_Connection class declaration
 class Equipment_Connection:
@@ -74,25 +75,29 @@ class Equipment_Connection:
             pass
     
     #This function runs a query command on the piece of testing equipment
-    def query(self, cmd):
+    def query(self, cmd, delay = False):
         response = None#no response initially
         
         #This code will run the query command, and if an error occurs, the error will be printed out so the user can see if the SCPI command has caused an error. If no error occurs,
         #the SCPI command was ran succesfully, and its response is returned
         try:
             response = self.device.query(cmd)
+            if(delay == True):
+                time.sleep(5)#delay for 5 seconds
         except Exception as e:
             print(e)
         return response
     
     #This function runs a write command on the piece of testing equipment
-    def write(self, cmd):
+    def write(self, cmd, delay = False):
         error = False#No error initially
         
         #This code will run the write command, and if an error occurs, the function will return true. If there is no error, the write command was run succesfully, and it will return
         #false instead
         try:
             self.device.write(cmd)
+            if(delay == True):
+                time.sleep(5)#delay for 5 seconds
         except:
             error = True
         return error

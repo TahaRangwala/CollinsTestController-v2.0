@@ -187,7 +187,6 @@ class Mixer_Spur_Test(Run_Tests):
                                             currentCell = []
                                             currentFreq = scaleFreq[iterationCount]
                                             length = len(scaleLocalOscillator)
-                                            print(iterationCount)
                                             for j in range(len(scaleLocalOscillator)):#looping through the local oscillator frequencies
                                                 currentString = ""
                                                 currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
@@ -197,7 +196,7 @@ class Mixer_Spur_Test(Run_Tests):
                                                     currentString = str(currentPowerMeasured) + " dBm"
                                                 elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):#checking if frequency is in entire range
                                                     freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
-                                                    isFreqError = device.write(freqCommand)
+                                                    isFreqError = device.write(freqCommand, True)
                                                     
                                                     #Changes the center frequency so we can read the correct value
                                                     plotPoints = device.query(fullCommand)
@@ -244,7 +243,7 @@ class Mixer_Spur_Test(Run_Tests):
                                                         currentString = str(currentPowerMeasured) + " dBm"
                                                     elif(currentFrequency >= self.freqStart and currentFrequency <= self.freqStop):
                                                         freqCommand = str(self.setCenterFreqCommand['cmd']) + str(currentFrequency)
-                                                        isFreqError = device.write(freqCommand)
+                                                        isFreqError = device.write(freqCommand, True)
                                                         plotPoints = device.query(fullCommand)
                                                         self.centerFrequency = currentFrequency
                                                         frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency, self.frequencySpan, self.freqUnits)
@@ -262,7 +261,8 @@ class Mixer_Spur_Test(Run_Tests):
                                                         currentString = "Out of Range"
                                                         
                                                     currentCell.append(currentString)
-                                                                                            
+                                                    previousIterationCount = iterationCount
+                                        
                                                 cellValues.append(currentCell)
                                             else:
                                                 continue
@@ -274,11 +274,10 @@ class Mixer_Spur_Test(Run_Tests):
                             else:
                                 device.query(fullCommand)
                         else:
-                            if(device.write(fullCommand) == True):
+                            if(device.write(fullCommand, True) == True):
                                 return False, "Failed", tableOutput
                             
             #updating the iteration count and making sure the plot has not been closed
-            previousIterationCount = iterationCount
             iterationCount = iterationCount + 1
             if(not plt.fignum_exists(figNum)):
                 abortTest = True
@@ -308,13 +307,6 @@ class Mixer_Spur_Test(Run_Tests):
         if(abortTest == True):
             self.isConfigured = False
             return False, "Aborted", tableOutput
-        
-        #Makes sure table has no dummy data
-        tempCellValues = []
-        tempCellValues.append(cellValues[0])
-        for i in range(iterationMax):
-            tempCellValues.append(cellValues[i+1])
-        cellValues = tempCellValues
         
         self.isConfigured = False
         return True, "Success", tableOutput

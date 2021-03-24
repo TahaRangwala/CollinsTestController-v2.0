@@ -89,7 +89,7 @@ class Other_Test(Run_Tests):
                             else:
                                 device.query(fullCommand)
                         else:
-                            if(device.write(fullCommand) == True):
+                            if(device.write(fullCommand, True) == True):
                                 return False, "Failed"
             iterationCount = iterationCount + 1
             if(not plt.fignum_exists(figNum)):

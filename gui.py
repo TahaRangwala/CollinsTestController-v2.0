@@ -36,9 +36,9 @@ def runGUI():
                     [sg.Text('Frequency Range Start:'), sg.InputText(default_text = '1', key = '-INFstart-')],
                     [sg.Text('Frequency Range Stop:'), sg.InputText(default_text = '2', key = '-INFstop-')],
                     [sg.Text('Frequency Range Step:'), sg.InputText(default_text = '0.1', key = '-INFstep-')],
-                    [sg.Text('Voltage Sweep Start (dBm):'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
-                    [sg.Text('Voltage Sweep Stop (dBm):'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
-                    [sg.Text('Voltage Sweep Step (dBm):'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
+                    [sg.Text('Voltage Sweep Start:'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
+                    [sg.Text('Voltage Sweep Stop:'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
+                    [sg.Text('Voltage Sweep Step:'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 

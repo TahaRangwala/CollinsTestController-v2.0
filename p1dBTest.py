@@ -184,7 +184,7 @@ class P1dB_Test(Run_Tests):
                                     try:
                                         if(firstTime == False):
                                             #Setting up the plot initially and gathering the initial data from the spectrum analyzer
-                                            plotPoints = device.query(fullCommand)
+                                            plotPoints = device.query(fullCommand, True)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency * freqScaler, self.frequencySpan, self.freqUnits)
                                             ax.set_xlim(start, stop)
                                             ax.set_ylim(-70, 30)
@@ -219,7 +219,7 @@ class P1dB_Test(Run_Tests):
                                                     self.voltDevice.write(voltCommand)
                                                     
                                                     #Gathering data from the spectrum analyzer
-                                                    plotPoints = device.query(fullCommand)
+                                                    plotPoints = device.query(fullCommand, True)
                                                     frequency, powerDB, start, stop = parseGetTrace(plotPoints, freqCount * freqScaler, self.frequencySpan, self.freqUnits)
                                                     ax.set_xlim(start, stop)
                                                     line.set_data(frequency, powerDB)
@@ -275,7 +275,7 @@ class P1dB_Test(Run_Tests):
                                 else:
                                     print('NOT DOING ANYTHING')
                             else:#runs query command if nothing else has been caught by the if statement
-                                device.query(fullCommand)
+                                device.query(fullCommand, True)
                         else:#runs write commands
                             if(device.write(fullCommand) == True):#Does nothing here cause write commands do not matter
                                 return False, "Failed", tableOutput

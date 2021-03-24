@@ -274,7 +274,7 @@ class PinVPout_Test(Run_Tests):
                             else:#runs other query commands and does nothing with the data
                                 device.query(fullCommand)
                         else:#runs the write commands
-                            if(device.write(fullCommand) == True):
+                            if(device.write(fullCommand, True) == True):
                                 return False, "Failed", tableOutput
             
             #Updating the iteration count
