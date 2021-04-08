@@ -28,17 +28,18 @@ def runGUI():
     #Test Configuration
     tempLayout2 = [[sg.Text('Test:'), sg.Radio('Mix Spur Test', 'RADIO1', default=True, key = '-R1-'), sg.Radio('P1dB Test', 'RADIO1', key = '-R2-'), sg.Radio('PinvPout Test', 'RADIO1', key = '-R3-'), sg.Radio('Other Test', 'RADIO1', key = '-R4-')],
                     [sg.Output(size=(60,10), key='-OUTPUT2-')],
+                    [sg.Text('Choose Side Band'), sg.Radio('Low Side', 'RADIO4', default=True, key = '-RL-'), sg.Radio('High Side', 'RADIO4', key = '-RH-')], 
                     [sg.Text('Number of Harmonics: '), sg.InputText(default_text = '3', key = '-INMSize-')],
                     [sg.Text('Input Frequency (IF): '), sg.InputText(default_text = '0.1', key = '-INMFreq-')],
                     [sg.Text('Local Oscillator Frequency (LO): '), sg.InputText(default_text = '5', key = '-INMLO-')],
                     [sg.Text('Radio Frequency (RF): '), sg.InputText(key = '-INMRF-')],
-                    [sg.Text('Impedance (Ohm):'), sg.InputText(default_text = '3690', key = '-INI-')],
+                    [sg.Text('Output Impedance (Ohm):'), sg.InputText(default_text = '50', key = '-INI-')],
                     [sg.Text('Frequency Range Start:'), sg.InputText(default_text = '1', key = '-INFstart-')],
                     [sg.Text('Frequency Range Stop:'), sg.InputText(default_text = '2', key = '-INFstop-')],
-                    [sg.Text('Frequency Range Step:'), sg.InputText(default_text = '0.1', key = '-INFstep-')],
-                    [sg.Text('Voltage Sweep Start:'), sg.InputText(default_text = '0.2', key = '-INVstart-')],
-                    [sg.Text('Voltage Sweep Stop:'), sg.InputText(default_text = '3.2', key = '-INVstop-')],
-                    [sg.Text('Voltage Sweep Step:'), sg.InputText(default_text = '0.5', key = '-INVstep-')],
+                    [sg.Text('Frequency Range Step:'), sg.InputText(default_text = '1', key = '-INFstep-')],
+                    [sg.Text('Voltage Sweep Start:'), sg.InputText(default_text = '-20', key = '-INVstart-')],
+                    [sg.Text('Voltage Sweep Stop:'), sg.InputText(default_text = '20', key = '-INVstop-')],
+                    [sg.Text('Voltage Sweep Step:'), sg.InputText(default_text = '5', key = '-INVstep-')],
                     [sg.Button('Configure Selected Test')],
                     [sg.Button('Reset Selected Test')]]
 
@@ -330,7 +331,7 @@ def runGUI():
             [sg.Button('Reset', size =(10, 2)), sg.Button('Close', size =(10, 2))]]
     
     #Setting up the size of the window, its title, layout, and element justification
-    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 950))
+    window = sg.Window('Universal PA Test Controller v2.0', layout, element_justification='c', size=(1535, 975))
         
     #Loop running while GUI is open
     while True:
@@ -408,6 +409,10 @@ def runGUI():
                     freqStart = values['-INFstart-']
                     freqStop = values['-INFstop-']
                     
+                    isHighSide = True
+                    if(values['-RL-'] == True):
+                        isHighSide = False
+                        
                     if(str(matrixSize) != "" and str(inputFreq) != "" and str(LO) != "" and str(RF) == ""):
                         try:
                             int(matrixSize)
@@ -415,7 +420,7 @@ def runGUI():
                             float(LO)
                             float(freqStart)
                             float(freqStop)
-                            MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, LO, 0, freqStart, freqStop)
+                            MixerSpurTest.changeMixerParameters(matrixSize, inputFreq, LO, 0, freqStart, freqStop, isHighSide)
                         except:
                             allInputs = False
                     elif(str(matrixSize) != "" and str(inputFreq) != "" and str(RF) != "" and str(LO) == ""):
@@ -494,7 +499,7 @@ def runGUI():
                         else:
                             window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
                     else:
-                        sg.Popup('Please input the impedance, frequency range and steps, and voltage sweep range and steps for the P1dB test!')    
+                        sg.Popup('Please input the output impedance, frequency range and steps, and voltage sweep range and steps for the P1dB test!')    
 
                 else:
                     window['-OUTPUT2-'].update("The P1dB Test is NOT configured correctly")
@@ -935,6 +940,7 @@ def runGUI():
             if(P1dBTest != None):
                 if(P1dBTest.isConfigured == True):
                     window['-OUTPUT2-'].update("The P1dB Test is Starting\nNOTE: Close the plot window to abort the test")
+                    print("testing")
                     
                     try:
                         testStatus, theReason, tableOutput = P1dBTest.runTest()
@@ -1044,13 +1050,13 @@ def runGUI():
             
             if(readyToChange == True):
                 if(MixerSpurTest != None):
-                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
+                    MixerSpurTest.changeGraphSettings(title, xLabel, yLabel, freqUnits, powUnits)
                 if(P1dBTest != None):
-                    P1dBTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
+                    P1dBTest.changeGraphSettings(title, xLabel, yLabel, freqUnits, powUnits)
                 if(PinVPoutTest != None):
-                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
+                    PinVPoutTest.changeGraphSettings(title, xLabel, yLabel, freqUnits, powUnits)
                 if(OtherTest != None):
-                    OtherTest.changeGraphSettings(title, xLabel, yLabel, freqUnits)
+                    OtherTest.changeGraphSettings(title, xLabel, yLabel, freqUnits, powUnits)
                 sg.Popup("Plot and table settings have been changed for added tests!")
             else:
                 sg.PopupError('Your plot and table settings are incorrect!')   

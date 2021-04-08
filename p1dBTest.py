@@ -184,7 +184,7 @@ class P1dB_Test(Run_Tests):
                                     try:
                                         if(firstTime == False):
                                             #Setting up the plot initially and gathering the initial data from the spectrum analyzer
-                                            plotPoints = device.query(fullCommand, True)
+                                            plotPoints = device.query(fullCommand)
                                             frequency, powerDB, start, stop = parseGetTrace(plotPoints, self.centerFrequency * freqScaler, self.frequencySpan, self.freqUnits)
                                             ax.set_xlim(start, stop)
                                             ax.set_ylim(-70, 30)
@@ -207,19 +207,19 @@ class P1dB_Test(Run_Tests):
                                                 
                                                 #Setting the freqeuncy asscociated with the device
                                                 freqCommand = self.setFreqCommand['cmd'] + str(freqCount * freqScaler)
-                                                self.freqDevice.write(freqCommand)
+                                                self.freqDevice.write(freqCommand, True)
                                                 #Setting the center frequency (same device as the Get Trace command)
                                                 centerFreqCommand = self.setCenterFreqCommand['cmd'] + str(freqCount) + self.freqUnits.upper()
-                                                device.write(centerFreqCommand)
+                                                device.write(centerFreqCommand, True)
                                                 
                                                 while(voltCount <= self.voltStop):#looping through the voltages (vpp)
                                                     voltCommand = self.setVoltCommand['cmd'] + str(voltCount)
                                                     
                                                     #Seting the voltage (vpp) for the device associated with it
-                                                    self.voltDevice.write(voltCommand)
+                                                    self.voltDevice.write(voltCommand, True)
                                                     
                                                     #Gathering data from the spectrum analyzer
-                                                    plotPoints = device.query(fullCommand, True)
+                                                    plotPoints = device.query(fullCommand)
                                                     frequency, powerDB, start, stop = parseGetTrace(plotPoints, freqCount * freqScaler, self.frequencySpan, self.freqUnits)
                                                     ax.set_xlim(start, stop)
                                                     line.set_data(frequency, powerDB)
@@ -230,9 +230,12 @@ class P1dB_Test(Run_Tests):
                                                     RMS = None
                                                     inputPower = None
                                                     if(self.powUnits == "Vpp"):
-                                                        RMS = float(float(voltCount) / (2 * math.sqrt(2)))
-                                                        inputPower = float(math.pow(RMS, 2) / float(self.impedance))
-                                                        inputPower = 10 * math.log10(1000 * inputPower)
+                                                        #RMS = float(float(voltCount) / (2 * math.sqrt(2)))
+                                                        #inputPower = float(math.pow(RMS, 2) / float(self.impedance))
+                                                        #inputPower = 10 * math.log10(1000 * inputPower)
+                                                        RMS = 0.3535 * float(voltCount)
+                                                        inputPower = float(math.pow(RMS, 2) / float(self.impedance)) * 1000
+                                                        inputPower = 10 * math.log(inputPower)
                                                     else:
                                                         inputPower = voltCount
 
@@ -275,9 +278,9 @@ class P1dB_Test(Run_Tests):
                                 else:
                                     print('NOT DOING ANYTHING')
                             else:#runs query command if nothing else has been caught by the if statement
-                                device.query(fullCommand, True)
+                                device.query(fullCommand)
                         else:#runs write commands
-                            if(device.write(fullCommand) == True):#Does nothing here cause write commands do not matter
+                            if(device.write(fullCommand, True) == True):#Does nothing here cause write commands do not matter
                                 return False, "Failed", tableOutput
             
             #updating the iteration count and checking if the plot window has been closed

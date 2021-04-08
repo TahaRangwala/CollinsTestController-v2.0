@@ -109,11 +109,12 @@ class Run_Tests:
         return configList, runList, resetList
     
     #This function changes the graph title, xlabel, ylabel, and frequency units
-    def changeGraphSettings(self, title, xlabel, ylabel, freqUnits):
+    def changeGraphSettings(self, title, xlabel, ylabel, freqUnits, powUnits):
         self.graphTitle = title
         self.xLabel = xlabel
         self.yLabel = ylabel
         self.freqUnits = freqUnits
+        self.powUnits = powUnits
     
     #This function adds the equipment to the devices array
     def addEquipment(self, listOfDevices):

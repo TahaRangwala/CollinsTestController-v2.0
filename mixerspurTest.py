@@ -65,15 +65,17 @@ class Mixer_Spur_Test(Run_Tests):
         self.freqStart = 0.0#frequency start
         self.freqStop = 0.0#frequency stop
         self.setCenterFreqCommand = None#commmand associated with set center frequency
+        self.isHighSide = False
     
     #This function changes the values of the instance variables
-    def changeMixerParameters(self, matrixSize, inputFreq, localOscillate, RF, freqStart, freqStop):
+    def changeMixerParameters(self, matrixSize, inputFreq, localOscillate, RF, freqStart, freqStop, isHighSide):
         self.matrixSize = int(matrixSize)
         self.inputFrequency = inputFreq
         self.localOscillator = localOscillate
         self.RF = RF
         self.freqStart = freqStart
         self.freqStop = freqStop
+        self.isHighSide = isHighSide
         if self.localOscillator == 0:
             self.localOscillator = self.RF
             
@@ -189,7 +191,12 @@ class Mixer_Spur_Test(Run_Tests):
                                             length = len(scaleLocalOscillator)
                                             for j in range(len(scaleLocalOscillator)):#looping through the local oscillator frequencies
                                                 currentString = ""
-                                                currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
+                                                currentFrequency = None
+                                                if (self.isHighSide == True):
+                                                    currentFrequency = abs(currentFreq + scaleLocalOscillator[j])
+                                                else:
+                                                    currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
+                        
                                                 if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):#making sure the frequency is in range
                                                     closestIndex = findClosestIndex(frequency, currentFrequency)#returns the index of the closest value in the frequency array
                                                     currentPowerMeasured = powerDB[closestIndex]#gets the power associated with the frequency
@@ -236,7 +243,12 @@ class Mixer_Spur_Test(Run_Tests):
                                             currentFreq = scaleFreq[iterationCount]
                                             if(iterationCount != previousIterationCount):
                                                 for j in range(len(scaleLocalOscillator)):
-                                                    currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
+                                                    currentFrequency = None
+                                                    if (self.isHighSide == True):
+                                                        currentFrequency = abs(currentFreq + scaleLocalOscillator[j])
+                                                    else:
+                                                        currentFrequency = abs(currentFreq - scaleLocalOscillator[j])
+                                                        
                                                     if(currentFrequency >= frequency[0] and currentFrequency <= frequency[len(frequency)-1]):
                                                         closestIndex = findClosestIndex(frequency, currentFrequency)
                                                         currentPowerMeasured = powerDB[closestIndex]
